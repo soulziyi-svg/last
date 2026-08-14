@@ -2,7 +2,7 @@ import { asset } from '../utils/asset';
 
 const P = asset('/img/콘텐츠1/전통한복/컨텐츠1/상품');
 
-export const HANBOK_REVIEWS = [
+const BASE_REVIEWS = [
   {
     id: 1,
     photo: `${P}/평상복/달빛하얀소복/달빛하얀소복02.png`,
@@ -64,3 +64,33 @@ export const HANBOK_REVIEWS = [
     product: '에메랄드공작한복',
   },
 ];
+
+const REVIEWERS = [
+  '장철희', '이서연', '박도윤', '최민재', '한지우',
+  '오하은', '김하린', '윤서준', '정다은', '송지호',
+  '임수아', '강민준', '백예린', '조현우', '문가영',
+  '신도현', '유나연', '권재민', '안소희', '서지훈',
+];
+
+const REVIEW_TEXTS = [
+  '사진보다 실물이 더 예쁘고 구성품도 꼼꼼하게 도착했어요.',
+  '친구들과 특별한 추억을 만들기 좋았고 사이즈도 잘 맞았습니다.',
+  '촬영용으로 빌렸는데 원단과 자수의 완성도가 정말 좋았어요.',
+  '배송과 반납이 간편해서 다음 행사에도 다시 이용하고 싶어요.',
+  '가족 모두 만족했고 사진도 자연스럽고 멋지게 나왔습니다.',
+];
+
+export const HANBOK_REVIEWS = Array.from({ length: 12 }, (_, index) => {
+  const base = BASE_REVIEWS[index % BASE_REVIEWS.length];
+  const month = String(7 - Math.floor(index / 4)).padStart(2, '0');
+  const day = String(15 - (index % 4) * 3).padStart(2, '0');
+
+  return {
+    ...base,
+    id: index + 1,
+    nickname: REVIEWERS[index],
+    date: `2026.${month}.${day}`,
+    rating: index % 4 === 0 ? 4.5 : 5,
+    text: index < BASE_REVIEWS.length ? base.text : REVIEW_TEXTS[index % REVIEW_TEXTS.length],
+  };
+});

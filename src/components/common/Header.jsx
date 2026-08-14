@@ -119,7 +119,7 @@ function Header() {
                   src={cat.logo}
                   alt={cat.label}
                   sx={{
-                    height: isScrolled ? '42px' : '100px',
+                    height: isScrolled ? '42px' : '80pt',
                     width: 'auto',
                     transition: 'height 0.25s ease',
                   }}

@@ -26,8 +26,8 @@ function MegaMenu({ columns, isOpen }) {
         borderBottom: `1px solid rgba(23,23,23,0.15)`,
         animation: 'slide-down 0.2s ease',
         zIndex: 30,
-        maxHeight: '78vh',
-        overflowY: 'auto',
+        maxHeight: 'none',
+        overflowY: 'visible',
       }}
     >
       <Box

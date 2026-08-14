@@ -31,15 +31,16 @@ function ReviewSection({ title = '진짜로 입어봄', reviews, bgcolor = COLOR
       <Box
         sx={{
           width: '90%',
-          maxWidth: '1400px',
+          maxWidth: '1800px',
           mx: 'auto',
           display: 'grid',
           gridTemplateColumns: {
             xs: 'repeat(1, 1fr)',
             sm: 'repeat(2, 1fr)',
             md: 'repeat(3, 1fr)',
+            lg: 'repeat(6, 1fr)',
           },
-          gap: 3,
+          gap: { xs: 2, lg: 1.5 },
         }}
       >
         {reviews.map((r) => (

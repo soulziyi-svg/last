@@ -29,7 +29,12 @@ function ContentSectionHeader({
 }) {
   return (
     <Box sx={{ textAlign: 'center', maxWidth: '820px', mx: 'auto', px: 2 }}>
-      <Box component="img" src={logo} alt={title} sx={{ height: logoHeight, width: 'auto', mx: 'auto', mb: 3 }} />
+      <Box
+        component="img"
+        src={logo}
+        alt={title}
+        sx={{ height: logoHeight, width: 'auto', mx: 'auto', mb: 3, display: 'block', bgcolor: 'transparent' }}
+      />
       <Box
         sx={{
           fontFamily: titleFont,
@@ -45,6 +50,7 @@ function ContentSectionHeader({
           fontFamily: "'Pretendard', sans-serif",
           fontSize: descSize,
           lineHeight: 1.6,
+          whiteSpace: 'pre-line',
           color: 'rgba(23,23,23,0.72)',
         }}
       >

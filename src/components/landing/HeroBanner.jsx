@@ -84,7 +84,7 @@ function HeroBanner() {
     >
       <Box
         sx={{
-          width: '90%',
+          width: '100%',
           mx: 'auto',
           display: 'flex',
           alignItems: 'stretch',

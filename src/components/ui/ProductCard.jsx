@@ -34,12 +34,26 @@ function ProductCard({ product, accentColor, onOpen }) {
         textAlign: 'left',
       }}
     >
-      <Box sx={{ position: 'relative', width: '100%', aspectRatio: '3 / 4', overflow: 'hidden', bgcolor: '#fff' }}>
+      <Box sx={{ position: 'relative', width: '100%', overflow: 'hidden', bgcolor: COLORS.white }}>
         <Box
           component="img"
-          src={hover ? wornImage : product.thumbnail}
+          src={product.thumbnail}
           alt={product.name}
-          sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          sx={{ width: '100%', height: 'auto', display: 'block', opacity: hover ? 0 : 1, transition: 'opacity 0.2s ease' }}
+        />
+        <Box
+          component="img"
+          src={wornImage}
+          alt={`${product.name} 착용 이미지`}
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            opacity: hover ? 1 : 0,
+            transition: 'opacity 0.2s ease',
+          }}
         />
         {product.hot && (
           <Box

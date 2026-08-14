@@ -19,11 +19,10 @@ function SliderCard({ product, onOpen, onHoverChange }) {
       sx={{
         position: 'relative',
         width: { xs: '165px', sm: '200px', md: '245px' },
-        aspectRatio: '350 / 600',
         flexShrink: 0,
         overflow: 'hidden',
         cursor: 'pointer',
-        bgcolor: '#eee',
+        bgcolor: COLORS.white,
       }}
     >
       <Box
@@ -32,8 +31,8 @@ function SliderCard({ product, onOpen, onHoverChange }) {
         alt={product.name}
         sx={{
           width: '100%',
-          height: '100%',
-          objectFit: 'cover',
+          height: 'auto',
+          display: 'block',
           transition: 'transform 0.35s ease',
           transform: hover ? 'scale(1.05)' : 'scale(1)',
         }}

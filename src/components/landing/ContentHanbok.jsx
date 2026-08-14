@@ -35,7 +35,8 @@ function ContentHanbok() {
       component="section"
       sx={{
         width: '100%',
-        py: { xs: 8, md: 12 },
+        pt: { xs: 8, md: 12 },
+        pb: 0,
         backgroundColor: '#f6efdd',
         backgroundImage: `url(${HANJI_BG})`,
         backgroundRepeat: 'repeat',
@@ -55,15 +56,35 @@ function ContentHanbok() {
       <Box sx={{ mt: { xs: 6, md: 8 } }}>
         <Box
           sx={{
+            width: 'fit-content',
+            mx: 'auto',
+            px: { xs: 3, md: 4 },
+            py: { xs: 1, md: 1.2 },
+            position: 'relative',
             textAlign: 'center',
             fontFamily: FONTS.pretendard,
-            fontWeight: 700,
-            fontSize: { xs: '22px', md: '30px' },
-            color: '#E23B3B',
-            mb: 1,
+            fontWeight: 800,
+            fontSize: { xs: '20px', md: '28px' },
+            letterSpacing: '0.08em',
+            color: COLORS.white,
+            bgcolor: '#B72E2E',
+            border: '1px solid #D9A441',
+            borderRadius: '999px',
+            boxShadow: '0 8px 22px rgba(126, 29, 29, 0.22)',
+            mb: { xs: 3, md: 4 },
+            '&::before, &::after': {
+              content: '""',
+              position: 'absolute',
+              top: '50%',
+              width: { xs: '34px', md: '64px' },
+              height: '1px',
+              bgcolor: '#B98A36',
+            },
+            '&::before': { right: 'calc(100% + 12px)' },
+            '&::after': { left: 'calc(100% + 12px)' },
           }}
         >
-          인기상품
+          인기 상품
         </Box>
         <AutoSlider products={sliderProducts} onOpen={setSelected} />
       </Box>

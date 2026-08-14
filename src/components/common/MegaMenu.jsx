@@ -11,11 +11,12 @@ import { COLORS, FONTS } from '../../theme/tokens';
  * Example usage:
  * <MegaMenu columns={columns} isOpen={isOpen} />
  */
-function MegaMenu({ columns, isOpen }) {
+function MegaMenu({ columns, isOpen, isScrolled = false, onMouseLeave }) {
   if (!isOpen) return null;
 
   return (
     <Box
+      onMouseLeave={onMouseLeave}
       sx={{
         position: 'absolute',
         top: '100%',
@@ -26,8 +27,13 @@ function MegaMenu({ columns, isOpen }) {
         borderBottom: `1px solid rgba(23,23,23,0.15)`,
         animation: 'slide-down 0.2s ease',
         zIndex: 30,
-        maxHeight: 'none',
-        overflowY: 'visible',
+        maxHeight: isScrolled ? 'calc(100vh - 110px)' : 'calc(100vh - 210px)',
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+        '&::-webkit-scrollbar': {
+          display: 'none',
+        },
       }}
     >
       <Box

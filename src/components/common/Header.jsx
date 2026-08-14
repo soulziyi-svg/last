@@ -100,7 +100,6 @@ function Header() {
                 key={cat.key}
                 component="button"
                 type="button"
-                onMouseEnter={() => setOpenKey(cat.key)}
                 onClick={() => scrollToAnchor(cat.anchor)}
                 sx={{
                   all: 'unset',
@@ -118,9 +117,12 @@ function Header() {
                   component="img"
                   src={cat.logo}
                   alt={cat.label}
+                  onMouseEnter={() => setOpenKey(cat.key)}
                   sx={{
                     height: isScrolled ? '42px' : '80pt',
                     width: 'auto',
+                    display: 'block',
+                    bgcolor: 'transparent',
                     transition: 'height 0.25s ease',
                   }}
                 />
@@ -148,6 +150,7 @@ function Header() {
                 alignItems: 'center',
                 gap: { xs: '10px', md: '18px' },
               }}
+              onMouseEnter={() => setOpenKey(null)}
             >
               {[SearchIcon, PersonOutlineIcon, ShoppingBagOutlinedIcon].map(
                 (Icon, i) => (
@@ -178,6 +181,8 @@ function Header() {
           <MegaMenu
             columns={openKey ? columnsByKey[openKey] : []}
             isOpen={Boolean(openKey)}
+            isScrolled={isScrolled}
+            onMouseLeave={() => setOpenKey(null)}
           />
         </Box>
       </Box>

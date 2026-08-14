@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import { COLORS, FONTS } from '../../theme/tokens';
 import ContentSectionHeader from './ContentSectionHeader';
 import AutoSlider from '../ui/AutoSlider';
@@ -10,7 +9,6 @@ import ReviewSection from './ReviewSection';
 
 function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcolor, products, reviews, reviewTitle }) {
   const [selected, setSelected] = useState(null);
-  const [showAllProducts, setShowAllProducts] = useState(false);
   const sliderProducts = useMemo(() => {
     const categories = [...new Set(products.map((product) => product.category))];
     return categories.flatMap((category) => products.filter((product) => product.category === category).slice(0, 2));
@@ -29,13 +27,8 @@ function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcol
 
       <Box sx={{ width: '90%', mx: 'auto', mt: { xs: 6, md: 10 } }}>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' }, gap: { xs: 2, md: 3 } }}>
-          {products.slice(0, showAllProducts ? products.length : 12).map((product) => <ProductCard key={product.id} product={product} accentColor={accent} onOpen={setSelected} />)}
+          {products.map((product) => <ProductCard key={product.id} product={product} accentColor={accent} onOpen={setSelected} />)}
         </Box>
-        {!showAllProducts && products.length > 12 && <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 4, md: 6 } }}>
-          <Button variant="outlined" onClick={() => setShowAllProducts(true)} sx={{ minWidth: { xs: 150, md: 190 }, py: 1.2, borderWidth: '2px', borderColor: accent, borderRadius: '999px', color: accent, fontFamily: FONTS.pretendard, fontWeight: 800, fontSize: { xs: '13px', md: '15px' }, '&:hover': { borderWidth: '2px', borderColor: accent, bgcolor: accent, color: COLORS.white } }}>
-            더보기 +
-          </Button>
-        </Box>}
       </Box>
 
       <Box sx={{ mt: { xs: 8, md: 12 } }}>

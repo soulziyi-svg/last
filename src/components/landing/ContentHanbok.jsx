@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import { COLORS, FONTS, CONTENT_THEME } from '../../theme/tokens';
 import { hanbokProducts, hanbokCategories, getHanbokProductsByCategory } from '../../data/hanbokProducts';
 import { HANBOK_REVIEWS } from '../../data/reviewData';
@@ -24,7 +23,6 @@ const accent = CONTENT_THEME.hanbok.accent;
  */
 function ContentHanbok() {
   const [selected, setSelected] = useState(null);
-  const [showAllProducts, setShowAllProducts] = useState(false);
 
   const sliderProducts = useMemo(
     () => hanbokCategories.flatMap((cat) => getHanbokProductsByCategory(cat).slice(0, 2)),
@@ -104,7 +102,7 @@ function ContentHanbok() {
             gap: { xs: 2, md: 3 },
           }}
         >
-          {hanbokProducts.slice(0, showAllProducts ? hanbokProducts.length : 12).map((product) => (
+          {hanbokProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -115,26 +113,6 @@ function ContentHanbok() {
             />
           ))}
         </Box>
-        {!showAllProducts && hanbokProducts.length > 12 && <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 4, md: 6 } }}>
-          <Button
-            variant="outlined"
-            onClick={() => setShowAllProducts(true)}
-            sx={{
-              minWidth: { xs: 150, md: 190 },
-              py: 1.2,
-              borderWidth: '2px',
-              borderColor: accent,
-              borderRadius: '999px',
-              color: accent,
-              fontFamily: FONTS.pretendard,
-              fontWeight: 800,
-              fontSize: { xs: '13px', md: '15px' },
-              '&:hover': { borderWidth: '2px', borderColor: accent, bgcolor: accent, color: COLORS.white },
-            }}
-          >
-            더보기 +
-          </Button>
-        </Box>}
       </Box>
 
       <Box sx={{ mt: { xs: 8, md: 12 } }}>

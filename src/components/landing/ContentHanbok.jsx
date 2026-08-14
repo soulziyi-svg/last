@@ -24,6 +24,7 @@ const accent = CONTENT_THEME.hanbok.accent;
  */
 function ContentHanbok() {
   const [selected, setSelected] = useState(null);
+  const [showAllProducts, setShowAllProducts] = useState(false);
 
   const sliderProducts = useMemo(
     () => hanbokCategories.flatMap((cat) => getHanbokProductsByCategory(cat).slice(0, 2)),
@@ -103,7 +104,7 @@ function ContentHanbok() {
             gap: { xs: 2, md: 3 },
           }}
         >
-          {hanbokProducts.map((product) => (
+          {hanbokProducts.slice(0, showAllProducts ? hanbokProducts.length : 12).map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -114,9 +115,10 @@ function ContentHanbok() {
             />
           ))}
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 4, md: 6 } }}>
+        {!showAllProducts && hanbokProducts.length > 12 && <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 4, md: 6 } }}>
           <Button
             variant="outlined"
+            onClick={() => setShowAllProducts(true)}
             sx={{
               minWidth: { xs: 150, md: 190 },
               py: 1.2,
@@ -132,7 +134,7 @@ function ContentHanbok() {
           >
             더보기 +
           </Button>
-        </Box>
+        </Box>}
       </Box>
 
       <Box sx={{ mt: { xs: 8, md: 12 } }}>

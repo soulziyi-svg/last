@@ -16,6 +16,7 @@ const accent = CONTENT_THEME.world.accent;
 
 function ContentWorld() {
   const [selected, setSelected] = useState(null);
+  const [showAllProducts, setShowAllProducts] = useState(false);
   const sliderProducts = useMemo(
     () => worldCategories.flatMap((category) => getWorldProductsByCategory(category).slice(0, 2)),
     []
@@ -43,15 +44,15 @@ function ContentWorld() {
 
       <Box sx={{ width: '90%', mx: 'auto', mt: { xs: 6, md: 10 } }}>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' }, gap: { xs: 2, md: 3 } }}>
-          {worldProducts.map((product) => (
+          {worldProducts.slice(0, showAllProducts ? worldProducts.length : 12).map((product) => (
             <ProductCard key={product.id} product={product} accentColor={accent} onOpen={setSelected} />
           ))}
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 4, md: 6 } }}>
-          <Button variant="outlined" sx={{ minWidth: { xs: 150, md: 190 }, py: 1.2, borderWidth: '2px', borderColor: accent, borderRadius: '999px', color: accent, fontFamily: FONTS.pretendard, fontWeight: 800, fontSize: { xs: '13px', md: '15px' }, '&:hover': { borderWidth: '2px', borderColor: accent, bgcolor: accent, color: COLORS.white } }}>
+        {!showAllProducts && worldProducts.length > 12 && <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 4, md: 6 } }}>
+          <Button variant="outlined" onClick={() => setShowAllProducts(true)} sx={{ minWidth: { xs: 150, md: 190 }, py: 1.2, borderWidth: '2px', borderColor: accent, borderRadius: '999px', color: accent, fontFamily: FONTS.pretendard, fontWeight: 800, fontSize: { xs: '13px', md: '15px' }, '&:hover': { borderWidth: '2px', borderColor: accent, bgcolor: accent, color: COLORS.white } }}>
             더보기 +
           </Button>
-        </Box>
+        </Box>}
       </Box>
 
       <Box sx={{ mt: { xs: 8, md: 12 } }}>

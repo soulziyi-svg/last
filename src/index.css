@@ -1,0 +1,135 @@
+@import '@fontsource/black-han-sans';
+@import '@fontsource/do-hyeon';
+@import 'pretendard/dist/web/static/pretendard-dynamic-subset.css';
+
+@font-face {
+  font-family: 'GMarketSans';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff')
+    format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src:
+    url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-8ExtraBold.woff2')
+      format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy-8ExtraBold.woff')
+      format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'LOTTERIA CHAB';
+  src:
+    url('https://cdn.jsdelivr.net/gh/fonts-archive/LOTTERIACHAB/LOTTERIACHAB.woff2')
+      format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/fonts-archive/LOTTERIACHAB/LOTTERIACHAB.woff')
+      format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* 상단 마퀴 무한 롤링 */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* 메가메뉴 / 서브메뉴 슬라이드 다운 */
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 창호지 텍스처 배경 (콘텐츠1) */
+.hanji-bg {
+  background-color: #f6efdd;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(120, 90, 50, 0.08) 0,
+      rgba(120, 90, 50, 0.08) 1px,
+      transparent 1px,
+      transparent 64px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(120, 90, 50, 0.08) 0,
+      rgba(120, 90, 50, 0.08) 1px,
+      transparent 1px,
+      transparent 64px
+    ),
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(255, 255, 255, 0.6),
+      transparent 60%
+    );
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(23, 23, 23, 0.25);
+}

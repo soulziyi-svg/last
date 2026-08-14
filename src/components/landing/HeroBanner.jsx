@@ -9,7 +9,7 @@ const AUTO_PLAY_MS = 4500;
 
 /**
  * HeroBanner 컴포넌트
- * 메인페이지 좌우 양방향 무한루프 슬라이더 (10% - 80% - 10% 레이아웃)
+ * 메인페이지 양방향 무한루프 슬라이더
  *
  * Example usage:
  * <HeroBanner />
@@ -29,15 +29,12 @@ function HeroBanner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
-  const prevIdx = (index - 1 + total) % total;
-  const nextIdx = (index + 1) % total;
-
-  const Slide = ({ item, variant }) => (
+  const Slide = ({ item }) => (
     <Box
       sx={{
         position: 'relative',
         height: '100%',
-        width: variant === 'main' ? '100%' : '100%',
+        width: '100%',
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
@@ -51,20 +48,11 @@ function HeroBanner() {
         sx={{
           width: '100%',
           height: '100%',
-          objectFit: variant === 'main' ? 'contain' : 'cover',
-          transform: variant === 'main' ? 'scale(1)' : 'scale(0.9)',
+          objectFit: 'contain',
+          transform: 'scale(1)',
           transition: 'transform 0.4s ease',
         }}
       />
-      {variant !== 'main' && (
-        <Box
-          sx={{
-            position: 'absolute',
-            inset: 0,
-            bgcolor: 'rgba(0,0,0,0.35)',
-          }}
-        />
-      )}
     </Box>
   );
 
@@ -83,11 +71,8 @@ function HeroBanner() {
           height: { xs: '260px', sm: '360px', md: '520px' },
         }}
       >
-        <Box sx={{ width: '10%', height: '100%' }}>
-          <Slide item={MAIN_BANNERS[prevIdx]} variant="side" />
-        </Box>
-        <Box sx={{ width: '80%', height: '100%', position: 'relative' }}>
-          <Slide item={MAIN_BANNERS[index]} variant="main" />
+        <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
+          <Slide item={MAIN_BANNERS[index]} />
 
           <Box
             component="button"
@@ -137,9 +122,6 @@ function HeroBanner() {
           >
             <ChevronRightIcon />
           </Box>
-        </Box>
-        <Box sx={{ width: '10%', height: '100%' }}>
-          <Slide item={MAIN_BANNERS[nextIdx]} variant="side" />
         </Box>
       </Box>
 

@@ -8,11 +8,8 @@ import { COLORS, FONTS } from '../../theme/tokens';
 import { NAV_CATEGORIES, MENU_BY_KEY } from '../../data/menuData';
 import { hanbokCategories, getHanbokProductsByCategory } from '../../data/hanbokProducts';
 import useHeaderScrolled from '../../hooks/useHeaderScrolled';
-import { asset } from '../../utils/asset';
 import TopMarquee from './TopMarquee';
 import MegaMenu from './MegaMenu';
-
-const BRAND_LOGO = asset('/img/콘텐츠1/전통한복/logo02.png');
 
 const scrollToAnchor = (anchor) => {
   document.querySelector(anchor)?.scrollIntoView({ behavior: 'smooth' });
@@ -81,38 +78,7 @@ function Header() {
           overflow: 'visible',
         }}
       >
-        {/* row1: brand logo */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: isScrolled ? '22px' : '30px',
-            transition: 'height 0.25s ease',
-          }}
-        >
-          <Box
-            component="button"
-            type="button"
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            sx={{ all: 'unset', cursor: 'pointer', display: 'flex' }}
-          >
-            <Box
-              component="img"
-              src={BRAND_LOGO}
-              alt="입어봄 IBUBOM"
-              sx={{
-                height: isScrolled ? '20px' : '28px',
-                width: 'auto',
-                transition: 'height 0.25s ease',
-              }}
-            />
-          </Box>
-        </Box>
-
-        {/* row2: category nav + icons + mega menu */}
+        {/* category nav + icons + mega menu */}
         <Box
           sx={{ position: 'relative' }}
           onMouseLeave={() => setOpenKey(null)}

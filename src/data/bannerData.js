@@ -1,31 +1,13 @@
 import { asset } from '../utils/asset';
 
 export const MAIN_BANNERS = [
-  {
-    id: 'costume-group',
-    src: asset('/img/베너/왕노비선비단체배너-v3.png'),
-    alt: '왕과 공주, 관복과 예복, 선비와 노비 의상을 함께 입은 친구들',
-  },
-  {
-    id: 1,
-    src: asset('/img/베너/달빛하얀소복베너.png'),
-    alt: '달빛하얀소복 - 하루를 빌리고 추억은 가져가세요',
-  },
-  {
-    id: 'stage-costume',
-    src: asset('/img/베너/리센느_무대의상_실사코스프레_2048x768.png'),
-    alt: '리센느 스타일 무대의상을 입고 공연하는 한국인 코스프레 모델',
-  },
-  {
-    id: 3,
-    src: asset('/img/베너/파스텔봄한복베너.png'),
-    alt: '파스텔봄한복 - 봄날의 산책',
-  },
-  {
-    id: 4,
-    src: asset('/img/베너/하늘빛연꽃자수한복베너.png'),
-    alt: '하늘빛연꽃자수한복 - 연못가의 하루',
-  },
+  { id: 'banner-000', src: asset('/img/베너/000.png'), alt: '입어봄 창의 코스튬 배너 1' },
+  { id: 'banner-011', src: asset('/img/베너/011.png'), alt: '입어봄 창의 코스튬 배너 2' },
+  { id: 'banner-022', src: asset('/img/베너/022.png'), alt: '입어봄 창의 코스튬 배너 3' },
+  { id: 'banner-033', src: asset('/img/베너/033.png'), alt: '입어봄 창의 코스튬 배너 4' },
+  { id: 'banner-044', src: asset('/img/베너/044.png'), alt: '입어봄 창의 코스튬 배너 5' },
+  { id: 'banner-055', src: asset('/img/베너/055.png'), alt: '입어봄 창의 코스튬 배너 6' },
+  { id: 'banner-066', src: asset('/img/베너/066.png'), alt: '입어봄 창의 코스튬 배너 7' },
 ];
 
 export const RENTAL_TIMELINE = [

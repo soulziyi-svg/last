@@ -5,29 +5,31 @@
  * (콘텐츠2~4는 이미지 자산이 아직 없어 클릭 시 해당 섹션으로 스크롤 이동한다.)
  */
 
+import { asset } from '../utils/asset';
+
 export const NAV_CATEGORIES = [
   {
     key: 'hanbok',
     label: '전통한복',
-    logo: '/img/콘텐츠1/전통한복/logo02.png',
+    logo: asset('/img/콘텐츠1/전통한복/logo02.png'),
     anchor: '#content-hanbok',
   },
   {
     key: 'world',
     label: '각 나라 전통의상',
-    logo: '/img/콘텐츠1/전통한복/logo03.png',
+    logo: asset('/img/콘텐츠1/전통한복/logo03.png'),
     anchor: '#content-world',
   },
   {
     key: 'cosplay',
     label: '코스프레',
-    logo: '/img/콘텐츠1/전통한복/logo04.png',
+    logo: asset('/img/콘텐츠1/전통한복/logo04.png'),
     anchor: '#content-cosplay',
   },
   {
     key: 'stage',
     label: '공연의상',
-    logo: '/img/콘텐츠1/전통한복/logo05.png',
+    logo: asset('/img/콘텐츠1/전통한복/logo05.png'),
     anchor: '#content-stage',
   },
 ];

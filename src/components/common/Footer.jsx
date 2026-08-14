@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import { COLORS, FONTS } from '../../theme/tokens';
+import { asset } from '../../utils/asset';
 
 const FOOTER_LINKS = ['이용약관', '개인정보처리방침', '대여안내', '자주묻는질문', '제휴문의'];
 
@@ -36,7 +37,7 @@ function Footer() {
         <Box sx={{ maxWidth: '420px' }}>
           <Box
             component="img"
-            src="/img/콘텐츠1/전통한복/01.png"
+            src={asset('/img/콘텐츠1/전통한복/01.png')}
             alt="입어봄 IBUBOM"
             sx={{ height: '54px', width: 'auto', mb: 2 }}
           />

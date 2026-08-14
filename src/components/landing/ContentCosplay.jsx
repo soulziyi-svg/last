@@ -1,8 +1,9 @@
 import { FONTS, CONTENT_THEME } from '../../theme/tokens';
 import { COSPLAY_MENU } from '../../data/menuData';
 import PlaceholderContentSection from './PlaceholderContentSection';
+import { asset } from '../../utils/asset';
 
-const LOGO = '/img/콘텐츠1/전통한복/logo04.png';
+const LOGO = asset('/img/콘텐츠1/전통한복/logo04.png');
 
 /**
  * ContentCosplay 컴포넌트

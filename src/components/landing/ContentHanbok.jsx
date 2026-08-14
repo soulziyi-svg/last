@@ -8,8 +8,10 @@ import AutoSlider from '../ui/AutoSlider';
 import ProductCard from '../ui/ProductCard';
 import ProductModal from '../ui/ProductModal';
 import ReviewSection from './ReviewSection';
+import { asset } from '../../utils/asset';
 
-const LOGO = '/img/콘텐츠1/전통한복/logo02.png';
+const LOGO = asset('/img/콘텐츠1/전통한복/logo02.png');
+const HANJI_BG = asset('/img/background.jpg');
 const accent = CONTENT_THEME.hanbok.accent;
 
 /**
@@ -28,7 +30,17 @@ function ContentHanbok() {
   );
 
   return (
-    <Box id="content-hanbok" component="section" className="hanji-bg" sx={{ width: '100%', py: { xs: 8, md: 12 } }}>
+    <Box
+      id="content-hanbok"
+      component="section"
+      sx={{
+        width: '100%',
+        py: { xs: 8, md: 12 },
+        backgroundColor: '#f6efdd',
+        backgroundImage: `url(${HANJI_BG})`,
+        backgroundRepeat: 'repeat',
+      }}
+    >
       <ContentSectionHeader
         logo={LOGO}
         title="오늘은 한국의 아름다움을 입어봄"

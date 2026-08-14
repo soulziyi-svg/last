@@ -7,8 +7,9 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { COLORS, FONTS, CONTENT_THEME } from '../theme/tokens';
 import { getHanbokProductById } from '../data/hanbokProducts';
 import Footer from '../components/common/Footer';
+import { asset } from '../utils/asset';
 
-const BRAND_LOGO = '/img/콘텐츠1/전통한복/logo02.png';
+const BRAND_LOGO = asset('/img/콘텐츠1/전통한복/logo02.png');
 
 /**
  * ProductDetailPage 컴포넌트

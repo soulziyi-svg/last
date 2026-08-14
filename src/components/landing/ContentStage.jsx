@@ -1,8 +1,9 @@
 import { FONTS, CONTENT_THEME } from '../../theme/tokens';
 import { STAGE_MENU } from '../../data/menuData';
 import PlaceholderContentSection from './PlaceholderContentSection';
+import { asset } from '../../utils/asset';
 
-const LOGO = '/img/콘텐츠1/전통한복/logo05.png';
+const LOGO = asset('/img/콘텐츠1/전통한복/logo05.png');
 
 /**
  * ContentStage 컴포넌트

@@ -1,4 +1,6 @@
-const P = '/img/콘텐츠1/전통한복/컨텐츠1/상품';
+import { asset } from '../utils/asset';
+
+const P = asset('/img/콘텐츠1/전통한복/컨텐츠1/상품');
 
 export const HANBOK_REVIEWS = [
   {

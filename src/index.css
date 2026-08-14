@@ -101,31 +101,6 @@ button {
   }
 }
 
-/* 창호지 텍스처 배경 (콘텐츠1) */
-.hanji-bg {
-  background-color: #f6efdd;
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      rgba(120, 90, 50, 0.08) 0,
-      rgba(120, 90, 50, 0.08) 1px,
-      transparent 1px,
-      transparent 64px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(120, 90, 50, 0.08) 0,
-      rgba(120, 90, 50, 0.08) 1px,
-      transparent 1px,
-      transparent 64px
-    ),
-    radial-gradient(
-      circle at 20% 20%,
-      rgba(255, 255, 255, 0.6),
-      transparent 60%
-    );
-}
-
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

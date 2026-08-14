@@ -8,10 +8,11 @@ import { COLORS, FONTS } from '../../theme/tokens';
 import { NAV_CATEGORIES, MENU_BY_KEY } from '../../data/menuData';
 import { hanbokCategories, getHanbokProductsByCategory } from '../../data/hanbokProducts';
 import useHeaderScrolled from '../../hooks/useHeaderScrolled';
+import { asset } from '../../utils/asset';
 import TopMarquee from './TopMarquee';
 import MegaMenu from './MegaMenu';
 
-const BRAND_LOGO = '/img/콘텐츠1/전통한복/logo02.png';
+const BRAND_LOGO = asset('/img/콘텐츠1/전통한복/logo02.png');
 
 const scrollToAnchor = (anchor) => {
   document.querySelector(anchor)?.scrollIntoView({ behavior: 'smooth' });

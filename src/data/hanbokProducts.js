@@ -3,7 +3,9 @@
  * public/img/콘텐츠1/전통한복/컨텐츠1/상품 실제 이미지 파일을 기준으로 작성됨.
  */
 
-const BASE = '/img/콘텐츠1/전통한복/컨텐츠1/상품';
+import { asset } from '../utils/asset';
+
+const BASE = asset('/img/콘텐츠1/전통한복/컨텐츠1/상품');
 
 const CATEGORY_INFO = {
   평상복: {

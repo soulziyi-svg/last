@@ -1,22 +1,24 @@
+import { asset } from '../utils/asset';
+
 export const MAIN_BANNERS = [
   {
     id: 1,
-    src: '/img/베너/달빛하얀소복베너.png',
+    src: asset('/img/베너/달빛하얀소복베너.png'),
     alt: '달빛하얀소복 - 하루를 빌리고 추억은 가져가세요',
   },
   {
     id: 2,
-    src: '/img/베너/아이보리금빛전통한복베너.png',
+    src: asset('/img/베너/아이보리금빛전통한복베너.png'),
     alt: '아이보리금빛전통한복 - 궁궐 속 그날의 나',
   },
   {
     id: 3,
-    src: '/img/베너/파스텔봄한복베너.png',
+    src: asset('/img/베너/파스텔봄한복베너.png'),
     alt: '파스텔봄한복 - 봄날의 산책',
   },
   {
     id: 4,
-    src: '/img/베너/하늘빛연꽃자수한복베너.png',
+    src: asset('/img/베너/하늘빛연꽃자수한복베너.png'),
     alt: '하늘빛연꽃자수한복 - 연못가의 하루',
   },
 ];

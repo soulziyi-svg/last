@@ -12,9 +12,9 @@ export const MAIN_BANNERS = [
     alt: '달빛하얀소복 - 하루를 빌리고 추억은 가져가세요',
   },
   {
-    id: 2,
-    src: asset('/img/베너/아이보리금빛전통한복베너.png'),
-    alt: '아이보리금빛전통한복 - 궁궐 속 그날의 나',
+    id: 'stage-costume',
+    src: asset('/img/베너/리센느_무대의상_실사코스프레_2048x768.png'),
+    alt: '리센느 스타일 무대의상을 입고 공연하는 한국인 코스프레 모델',
   },
   {
     id: 3,

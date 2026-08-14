@@ -126,6 +126,7 @@ function HeroBanner() {
               justifyContent: 'center',
               width: 40,
               height: 40,
+              borderRadius: '50%',
               zIndex: 5,
             }}
           >
@@ -150,10 +151,46 @@ function HeroBanner() {
               justifyContent: 'center',
               width: 40,
               height: 40,
+              borderRadius: '50%',
               zIndex: 5,
             }}
           >
             <ChevronRightIcon />
+          </Box>
+
+          <Box
+            sx={{
+              position: 'absolute',
+              left: '50%',
+              bottom: { xs: 14, md: 20 },
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              zIndex: 6,
+            }}
+          >
+            {MAIN_BANNERS.map((item, i) => (
+              <Box
+                key={item.id}
+                component="button"
+                type="button"
+                aria-label={`배너 ${i + 1}로 이동`}
+                onClick={() => setIndex(i)}
+                sx={{
+                  all: 'unset',
+                  cursor: 'pointer',
+                  width: i === index ? '12px' : '8px',
+                  height: i === index ? '12px' : '8px',
+                  borderRadius: '50%',
+                  bgcolor: i === index ? COLORS.white : 'rgba(255,255,255,0.55)',
+                  border: i === index ? '2px solid rgba(23,23,23,0.45)' : '1px solid rgba(23,23,23,0.25)',
+                  boxShadow: '0 2px 8px rgba(23,23,23,0.3)',
+                  transition: 'all 0.25s ease',
+                }}
+              />
+            ))}
           </Box>
         </Box>
         <Box
@@ -170,33 +207,6 @@ function HeroBanner() {
         </Box>
       </Box>
 
-      {/* progress bar nav */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '10px',
-          mt: 3,
-        }}
-      >
-        {MAIN_BANNERS.map((item, i) => (
-          <Box
-            key={item.id}
-            component="button"
-            type="button"
-            aria-label={`배너 ${i + 1}로 이동`}
-            onClick={() => setIndex(i)}
-            sx={{
-              all: 'unset',
-              cursor: 'pointer',
-              width: i === index ? '32px' : '10px',
-              height: '4px',
-              bgcolor: i === index ? COLORS.purple : 'rgba(23,23,23,0.2)',
-              transition: 'all 0.25s ease',
-            }}
-          />
-        ))}
-      </Box>
     </Box>
   );
 }

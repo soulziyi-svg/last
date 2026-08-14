@@ -7,6 +7,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { COLORS, FONTS, CONTENT_THEME } from '../theme/tokens';
 import { getHanbokProductById } from '../data/hanbokProducts';
 import { getWorldProductById } from '../data/worldProducts';
+import { getCosplayProductById } from '../data/cosplayProducts';
+import { getStageProductById } from '../data/stageProducts';
 import Footer from '../components/common/Footer';
 import { asset } from '../utils/asset';
 
@@ -21,10 +23,11 @@ const BRAND_LOGO = asset('/img/콘텐츠1/전통한복/logo02.png');
  */
 function ProductDetailPage() {
   const { id } = useParams();
-  const product = getHanbokProductById(decodeURIComponent(id)) || getWorldProductById(decodeURIComponent(id));
+  const decodedId = decodeURIComponent(id);
+  const product = getHanbokProductById(decodedId) || getWorldProductById(decodedId) || getCosplayProductById(decodedId) || getStageProductById(decodedId);
   const [activeImg, setActiveImg] = useState(0);
   const [wished, setWished] = useState(false);
-  const accent = product?.contentKey === 'world' ? CONTENT_THEME.world.accent : CONTENT_THEME.hanbok.accent;
+  const accent = product ? (CONTENT_THEME[product.contentKey]?.accent || CONTENT_THEME.hanbok.accent) : CONTENT_THEME.hanbok.accent;
 
   if (!product) {
     return (
@@ -91,7 +94,7 @@ function ProductDetailPage() {
 
         <Box sx={{ width: { xs: '100%', md: '45%' } }}>
           <Box sx={{ fontFamily: FONTS.pretendard, fontSize: '13px', color: accent, mb: 1 }}>
-            {product.contentKey === 'world' ? '세계 전통의상' : '전통한복'} · {product.category}
+            {{ hanbok: '전통한복', world: '세계 전통의상', cosplay: '코스프레', stage: '공연의상' }[product.contentKey]} · {product.category}
           </Box>
           <Box sx={{ fontFamily: FONTS.gmarket, fontSize: '30px', color: COLORS.black, mb: 1.5 }}>
             {product.name}

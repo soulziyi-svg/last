@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { COLORS, FONTS } from '../../theme/tokens';
 import ContentSectionHeader from './ContentSectionHeader';
 import AutoSlider from '../ui/AutoSlider';
@@ -28,6 +29,11 @@ function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcol
       <Box sx={{ width: '90%', mx: 'auto', mt: { xs: 6, md: 10 } }}>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' }, gap: { xs: 2, md: 3 } }}>
           {products.map((product) => <ProductCard key={product.id} product={product} accentColor={accent} onOpen={setSelected} />)}
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 4, md: 6 } }}>
+          <Button variant="outlined" sx={{ minWidth: { xs: 150, md: 190 }, py: 1.2, borderWidth: '2px', borderColor: accent, borderRadius: '999px', color: accent, fontFamily: FONTS.pretendard, fontWeight: 800, fontSize: { xs: '13px', md: '15px' }, '&:hover': { borderWidth: '2px', borderColor: accent, bgcolor: accent, color: COLORS.white } }}>
+            더보기 +
+          </Button>
         </Box>
       </Box>
 

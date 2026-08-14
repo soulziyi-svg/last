@@ -7,12 +7,13 @@ import ProductCard from '../ui/ProductCard';
 import ProductModal from '../ui/ProductModal';
 import ReviewSection from './ReviewSection';
 
-function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcolor, products, reviews, reviewTitle }) {
+function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcolor, products, popularProducts, reviews, reviewTitle }) {
   const [selected, setSelected] = useState(null);
   const sliderProducts = useMemo(() => {
+    if (popularProducts?.length) return popularProducts;
     const categories = [...new Set(products.map((product) => product.category))];
     return categories.flatMap((category) => products.filter((product) => product.category === category).slice(0, 2));
-  }, [products]);
+  }, [products, popularProducts]);
 
   return (
     <Box id={id} component="section" sx={{ width: '100%', pt: { xs: 8, md: 12 }, pb: 0, bgcolor }}>

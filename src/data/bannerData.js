@@ -2,6 +2,11 @@ import { asset } from '../utils/asset';
 
 export const MAIN_BANNERS = [
   {
+    id: 'costume-group',
+    src: asset('/img/베너/왕노비선비단체배너-v3.png'),
+    alt: '왕과 공주, 관복과 예복, 선비와 노비 의상을 함께 입은 친구들',
+  },
+  {
     id: 1,
     src: asset('/img/베너/달빛하얀소복베너.png'),
     alt: '달빛하얀소복 - 하루를 빌리고 추억은 가져가세요',

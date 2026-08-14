@@ -2,6 +2,11 @@ import { asset } from '../utils/asset';
 
 const P = asset('/img/콘텐츠1/전통한복/컨텐츠1/상품');
 
+const REVIEW_PHOTOS = Array.from(
+  { length: 12 },
+  (_, index) => asset(`/img/reviews/review-${String(index + 1).padStart(2, '0')}.png`)
+);
+
 const BASE_REVIEWS = [
   {
     id: 1,
@@ -88,6 +93,7 @@ export const HANBOK_REVIEWS = Array.from({ length: 12 }, (_, index) => {
   return {
     ...base,
     id: index + 1,
+    photo: REVIEW_PHOTOS[index],
     nickname: REVIEWERS[index],
     date: `2026.${month}.${day}`,
     rating: index % 4 === 0 ? 4.5 : 5,

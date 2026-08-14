@@ -8,8 +8,6 @@ import ContentHanbok from '../components/landing/ContentHanbok';
 import ContentWorld from '../components/landing/ContentWorld';
 import ContentCosplay from '../components/landing/ContentCosplay';
 import ContentStage from '../components/landing/ContentStage';
-import ReviewSection from '../components/landing/ReviewSection';
-import { HANBOK_REVIEWS } from '../data/reviewData';
 
 /**
  * HomePage 컴포넌트
@@ -28,7 +26,6 @@ function HomePage() {
       <ContentWorld />
       <ContentCosplay />
       <ContentStage />
-      <ReviewSection title="입어봄, 진짜 후기" reviews={HANBOK_REVIEWS} bgcolor={COLORS.white} />
       <Footer />
     </Box>
   );

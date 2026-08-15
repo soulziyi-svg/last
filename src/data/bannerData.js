@@ -6,8 +6,8 @@ export const MAIN_BANNERS = [
   { id: 'banner-022', src: asset('/img/베너/022.png'), alt: '입어봄 창의 코스튬 배너 3' },
   { id: 'banner-033', src: asset('/img/베너/033.png'), alt: '입어봄 창의 코스튬 배너 4' },
   { id: 'banner-044', src: asset('/img/베너/044.png'), alt: '입어봄 창의 코스튬 배너 5' },
-  { id: 'banner-055', src: asset('/img/베너/055.png'), alt: '입어봄 창의 코스튬 배너 6' },
   { id: 'banner-066', src: asset('/img/베너/066.png'), alt: '입어봄 창의 코스튬 배너 7' },
+  { id: 'banner-077', src: asset('/img/베너/077.png'), alt: '입어봄 한복 가족사진 배너' },
 ];
 
 export const RENTAL_TIMELINE = [

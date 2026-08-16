@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import Rating from '@mui/material/Rating';
+import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { COLORS, FONTS } from '../../theme/tokens';
+import { asset } from '../../utils/asset';
 
 /**
  * ProductCard 컴포넌트
@@ -16,9 +21,27 @@ import { COLORS, FONTS } from '../../theme/tokens';
  */
 function ProductCard({ product, accentColor, onOpen }) {
   const [hover, setHover] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [inCart, setInCart] = useState(false);
   const wornImage = product.images[1] || product.images[0];
-  const countryFlags = { 일본: '🇯🇵', 중국: '🇨🇳', 베트남: '🇻🇳', 태국: '🇹🇭' };
+  const countryFlags = {
+    일본: asset('/img/flags/japan.svg'),
+    중국: asset('/img/flags/china.svg'),
+    베트남: asset('/img/flags/vietnam.svg'),
+    태국: asset('/img/flags/thailand.svg'),
+  };
   const countryFlag = product.contentKey === 'world' ? countryFlags[product.category] : null;
+  const showActions = product.contentKey === 'hanbok' || product.contentKey === 'world';
+  const showDetailedDescription = product.contentKey === 'hanbok' || product.contentKey === 'world';
+  const cardDescription = showDetailedDescription
+    ? product.history || product.description || product.shortDesc
+    : product.shortDesc;
+
+  const stopCardAction = (event, action) => {
+    event.preventDefault();
+    event.stopPropagation();
+    action();
+  };
 
   return (
     <Box
@@ -93,21 +116,66 @@ function ProductCard({ product, accentColor, onOpen }) {
               zIndex: 4,
               display: 'flex',
               alignItems: 'center',
-              gap: 0.5,
-              px: 0.9,
-              py: 0.35,
+              width: { xs: 25, sm: 29 },
+              height: { xs: 18, sm: 20 },
+              overflow: 'hidden',
               bgcolor: 'rgba(255,255,255,0.96)',
-              border: `2px solid ${accentColor}`,
-              borderRadius: '999px',
+              border: '2px solid #fff',
+              borderRadius: '5px',
               boxShadow: '0 4px 14px rgba(0,0,0,0.22)',
-              fontFamily: FONTS.pretendard,
-              lineHeight: 1,
             }}
           >
-            <Box component="span" sx={{ fontSize: { xs: 20, sm: 24 } }}>{countryFlag}</Box>
-            <Box component="span" sx={{ fontSize: '10px', fontWeight: 900, color: COLORS.black }}>
-              {product.category}
-            </Box>
+            <Box component="img" src={countryFlag} alt={`${product.category} 국기`} sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          </Box>
+        )}
+        {product.contentKey === 'hanbok' && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              zIndex: 4,
+              px: { xs: 1, sm: 1.2 },
+              py: 0.45,
+              bgcolor: 'rgba(255,255,255,0.94)',
+              color: accentColor,
+              border: `1.5px solid ${accentColor}`,
+              borderRadius: '999px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.16)',
+              fontFamily: FONTS.pretendard,
+              fontWeight: 800,
+              fontSize: { xs: '10px', sm: '11px' },
+              lineHeight: 1.2,
+            }}
+          >
+            {product.category}
+          </Box>
+        )}
+        {showActions && (
+          <Box
+            sx={{
+              position: 'absolute',
+              right: 8,
+              bottom: 8,
+              zIndex: 5,
+              display: 'flex',
+              gap: 0.6,
+            }}
+          >
+            <IconButton
+              aria-label={liked ? '좋아요 취소' : '좋아요'}
+              onClick={(event) => stopCardAction(event, () => setLiked((value) => !value))}
+              sx={{ width: 34, height: 34, bgcolor: 'rgba(255,255,255,0.94)', color: liked ? '#E23B61' : COLORS.black, boxShadow: '0 3px 12px rgba(0,0,0,0.2)', '&:hover': { bgcolor: COLORS.white } }}
+            >
+              {liked ? <FavoriteRoundedIcon sx={{ fontSize: 19 }} /> : <FavoriteBorderRoundedIcon sx={{ fontSize: 19 }} />}
+            </IconButton>
+            <IconButton
+              aria-label={inCart ? '장바구니에서 빼기' : '장바구니 담기'}
+              onClick={(event) => stopCardAction(event, () => setInCart((value) => !value))}
+              sx={{ width: 34, height: 34, bgcolor: inCart ? accentColor : 'rgba(255,255,255,0.94)', color: inCart ? COLORS.white : COLORS.black, boxShadow: '0 3px 12px rgba(0,0,0,0.2)', '&:hover': { bgcolor: inCart ? accentColor : COLORS.white } }}
+            >
+              <ShoppingCartOutlinedIcon sx={{ fontSize: 19 }} />
+            </IconButton>
           </Box>
         )}
       </Box>
@@ -123,16 +191,24 @@ function ProductCard({ product, accentColor, onOpen }) {
         >
           {product.name}
         </Box>
-        {product.shortDesc && (
+        {cardDescription && (
           <Box
             sx={{
               fontFamily: FONTS.pretendard,
               fontSize: '11px',
               color: 'rgba(23,23,23,0.55)',
               mb: 0.6,
+              lineHeight: 1.55,
+              ...(showDetailedDescription && {
+                minHeight: '4.65em',
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: 3,
+                overflow: 'hidden',
+              }),
             }}
           >
-            {product.shortDesc}
+            {cardDescription}
           </Box>
         )}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px', mb: 0.5 }}>

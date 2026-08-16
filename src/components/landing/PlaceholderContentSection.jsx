@@ -2,11 +2,11 @@ import Box from '@mui/material/Box';
 import { COLORS, FONTS } from '../../theme/tokens';
 import ContentSectionHeader from './ContentSectionHeader';
 
-function PlaceholderContentSection({ id, logo, title, desc, titleFont, accentColor, bgColor, groups }) {
+function PlaceholderContentSection({ id, logo, title, desc, titleFont, accentColor, bgColor, groups, images = [] }) {
   const cards = groups.flatMap((group) =>
     group.items.map((name) => ({ group: group.title, name }))
   );
-  const preview = cards.slice(0, 18);
+  const preview = cards.slice(0, 18).map((card, index) => ({ ...card, image: images[index] }));
   const remaining = cards.length - preview.length;
 
   return (
@@ -72,28 +72,50 @@ function PlaceholderContentSection({ id, logo, title, desc, titleFont, accentCol
         >
           {preview.map((card) => (
             <Box key={`${card.group}-${card.name}`} sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box
-                sx={{
-                  width: '100%',
-                  minHeight: { xs: '180px', md: '260px' },
-                  bgcolor: COLORS.white,
-                  border: `1px solid ${accentColor}33`,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  textAlign: 'center',
-                  p: 2,
-                  boxShadow: '0 8px 24px rgba(23,23,23,0.06)',
-                }}
-              >
-                <Box sx={{ fontFamily: FONTS.gmarket, fontSize: '14px', lineHeight: 1.5, color: COLORS.black }}>
+              {card.image ? (
+                <Box
+                  component="img"
+                  src={card.image}
+                  alt={card.name}
+                  loading="lazy"
+                  sx={{
+                    width: '100%',
+                    height: 'auto',
+                    display: 'block',
+                    bgcolor: COLORS.white,
+                    border: `1px solid ${accentColor}33`,
+                    boxShadow: '0 8px 24px rgba(23,23,23,0.08)',
+                  }}
+                />
+              ) : (
+                <Box
+                  sx={{
+                    width: '100%',
+                    minHeight: { xs: '180px', md: '260px' },
+                    bgcolor: COLORS.white,
+                    border: `1px solid ${accentColor}33`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    p: 2,
+                    boxShadow: '0 8px 24px rgba(23,23,23,0.06)',
+                  }}
+                >
+                  <Box sx={{ fontFamily: FONTS.gmarket, fontSize: '14px', lineHeight: 1.5, color: COLORS.black }}>
+                    {card.name}
+                  </Box>
+                  <Box sx={{ mt: 1.2, fontFamily: FONTS.pretendard, fontSize: '11px', color: accentColor }}>
+                    상품 이미지 준비 중
+                  </Box>
+                </Box>
+              )}
+              {card.image && (
+                <Box sx={{ fontFamily: FONTS.gmarket, fontSize: '13px', lineHeight: 1.45, color: COLORS.black, mt: 1.2 }}>
                   {card.name}
                 </Box>
-                <Box sx={{ mt: 1.2, fontFamily: FONTS.pretendard, fontSize: '11px', color: accentColor }}>
-                  상품 이미지 준비 중
-                </Box>
-              </Box>
+              )}
               <Box sx={{ fontFamily: FONTS.pretendard, fontSize: '11px', color: 'rgba(23,23,23,0.58)', mt: 1 }}>
                 {card.group}
               </Box>

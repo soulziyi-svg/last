@@ -228,20 +228,20 @@ function Header() {
                 component="button"
                 type="button"
                 onClick={() => setDialog('cart')}
-                sx={{ all: 'unset', height: 40, px: { md: 0.5, lg: 1 }, display: 'flex', alignItems: 'center', gap: 0.6, cursor: 'pointer', fontSize: 14, fontWeight: 800 }}
+                sx={{ all: 'unset', minWidth: 48, height: 48, px: { md: 0.25, lg: 0.75 }, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0.2, cursor: 'pointer', fontSize: 11, lineHeight: 1, fontWeight: 800 }}
               >
                 <Badge badgeContent={cart.length} color="error"><ShoppingBagOutlinedIcon sx={{ fontSize: 23 }} /></Badge>
-                <Box component="span" sx={{ display: { md: 'none', lg: 'inline' } }}>장바구니</Box>
+                <Box component="span">장바구니</Box>
               </Box>
 
               <Box
                 component="button"
                 type="button"
                 onClick={() => setDialog('tracking')}
-                sx={{ all: 'unset', height: 40, px: { md: 0.5, lg: 1 }, display: 'flex', alignItems: 'center', gap: 0.6, cursor: 'pointer', fontSize: 14, fontWeight: 800 }}
+                sx={{ all: 'unset', minWidth: 48, height: 48, px: { md: 0.25, lg: 0.75 }, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0.2, cursor: 'pointer', fontSize: 11, lineHeight: 1, fontWeight: 800 }}
               >
                 <LocalShippingOutlinedIcon sx={{ fontSize: 23 }} />
-                <Box component="span" sx={{ display: { md: 'none', lg: 'inline' } }}>배송조회</Box>
+                <Box component="span">배송조회</Box>
               </Box>
             </Box>
 

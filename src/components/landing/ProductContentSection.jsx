@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { COLORS, FONTS } from '../../theme/tokens';
 import ContentSectionHeader from './ContentSectionHeader';
@@ -9,6 +10,7 @@ import ReviewSection from './ReviewSection';
 import useManagedProducts from '../../hooks/useManagedProducts';
 
 function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcolor, products, popularProducts, reviews, reviewTitle }) {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
   const contentKey = id.replace('content-', '');
   const managedProducts = useManagedProducts(products, contentKey);
@@ -21,6 +23,15 @@ function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcol
     return categories.flatMap((category) => managedProducts.filter((product) => product.category === category).slice(0, 2));
   }, [managedProducts, popularProducts]);
 
+  const openProduct = (product) => {
+    if (product.id === 'cosplay-38') {
+      navigate(`/product/${encodeURIComponent(product.id)}`);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      return;
+    }
+    setSelected(product);
+  };
+
   return (
     <Box id={id} component="section" sx={{ width: '100%', pt: { xs: 8, md: 12 }, pb: 0, bgcolor }}>
       <ContentSectionHeader logo={logo} title={title} desc={desc} titleFont={titleFont} accentColor={accent} logoHeight="120px" titleSize={{ xs: '22px', md: '30px' }} descSize={{ xs: '13px', md: '15px' }} />
@@ -29,12 +40,12 @@ function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcol
         <Box sx={{ width: 'fit-content', mx: 'auto', px: { xs: 3, md: 4 }, py: { xs: 1, md: 1.2 }, position: 'relative', textAlign: 'center', fontFamily: FONTS.pretendard, fontWeight: 800, fontSize: { xs: '20px', md: '28px' }, letterSpacing: '0.08em', color: COLORS.white, bgcolor: accent, border: '1px solid rgba(255,255,255,0.75)', borderRadius: '999px', boxShadow: '0 8px 22px rgba(23,23,23,0.18)', mb: { xs: 3, md: 4 }, '&::before, &::after': { content: '""', position: 'absolute', top: '50%', width: { xs: '34px', md: '64px' }, height: '1px', bgcolor: accent }, '&::before': { right: 'calc(100% + 12px)' }, '&::after': { left: 'calc(100% + 12px)' } }}>
           인기 상품
         </Box>
-        <AutoSlider products={sliderProducts} onOpen={setSelected} />
+        <AutoSlider products={sliderProducts} onOpen={openProduct} />
       </Box>
 
       <Box sx={{ width: '90%', mx: 'auto', mt: { xs: 6, md: 10 } }}>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(6, 1fr)' }, gap: { xs: 3, md: 3 } }}>
-          {managedProducts.map((product) => <ProductCard key={product.id} product={product} accentColor={accent} onOpen={setSelected} />)}
+          {managedProducts.map((product) => <ProductCard key={product.id} product={product} accentColor={accent} onOpen={openProduct} />)}
         </Box>
       </Box>
 

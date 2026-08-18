@@ -152,10 +152,106 @@ function Header() {
             <Box
               sx={{
                 position: 'absolute',
-                right: { xs: 16, md: 32 },
+                right: { md: 24, lg: 32 },
                 top: '50%',
                 transform: 'translateY(-50%)',
                 display: 'flex',
+                alignItems: 'center',
+                gap: { md: 0.75, lg: 1.25 },
+                whiteSpace: 'nowrap',
+              }}
+              onMouseEnter={() => setOpenKey(null)}
+            >
+              <Box
+                component="button"
+                type="button"
+                aria-label="검색"
+                onClick={() => setDialog('search')}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  border: 0,
+                  borderRadius: '50%',
+                  bgcolor: 'transparent',
+                  display: 'grid',
+                  placeItems: 'center',
+                  cursor: 'pointer',
+                  color: COLORS.black,
+                  '&:hover': { bgcolor: '#F3F0F8' },
+                }}
+              >
+                <SearchIcon sx={{ fontSize: 24 }} />
+              </Box>
+
+              <Box
+                component="button"
+                type="button"
+                onClick={() => setDialog('signup')}
+                sx={{
+                  height: 40,
+                  px: { md: 1.5, lg: 2.25 },
+                  border: 0,
+                  borderRadius: '999px',
+                  bgcolor: '#A995E8',
+                  color: '#fff',
+                  fontWeight: 900,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  boxShadow: '0 5px 14px rgba(135, 109, 210, .25)',
+                  '&:hover': { bgcolor: '#927DD6' },
+                }}
+              >
+                회원가입
+              </Box>
+
+              <Box
+                component="button"
+                type="button"
+                onClick={() => setDialog('login')}
+                sx={{
+                  height: 40,
+                  px: { md: 1.5, lg: 2.25 },
+                  border: '1px solid #D7D0E5',
+                  borderRadius: '999px',
+                  bgcolor: '#fff',
+                  color: COLORS.black,
+                  fontWeight: 800,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: '#F8F5FC', borderColor: '#A995E8' },
+                }}
+              >
+                로그인
+              </Box>
+
+              <Box
+                component="button"
+                type="button"
+                onClick={() => setDialog('cart')}
+                sx={{ all: 'unset', height: 40, px: { md: 0.5, lg: 1 }, display: 'flex', alignItems: 'center', gap: 0.6, cursor: 'pointer', fontSize: 14, fontWeight: 800 }}
+              >
+                <Badge badgeContent={cart.length} color="error"><ShoppingBagOutlinedIcon sx={{ fontSize: 23 }} /></Badge>
+                <Box component="span" sx={{ display: { md: 'none', lg: 'inline' } }}>장바구니</Box>
+              </Box>
+
+              <Box
+                component="button"
+                type="button"
+                onClick={() => setDialog('tracking')}
+                sx={{ all: 'unset', height: 40, px: { md: 0.5, lg: 1 }, display: 'flex', alignItems: 'center', gap: 0.6, cursor: 'pointer', fontSize: 14, fontWeight: 800 }}
+              >
+                <LocalShippingOutlinedIcon sx={{ fontSize: 23 }} />
+                <Box component="span" sx={{ display: { md: 'none', lg: 'inline' } }}>배송조회</Box>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                position: 'absolute',
+                display: 'none',
+                right: { xs: 16, md: 32 },
+                top: '50%',
+                transform: 'translateY(-50%)',
                 alignItems: 'center',
                 gap: { xs: '10px', md: '18px' },
               }}
@@ -215,6 +311,12 @@ function Header() {
 
       <Drawer anchor="right" open={mobileOpen} onClose={() => setMobileOpen(false)} slotProps={{ paper: { sx: { width: 'min(86vw, 360px)', p: 2.5, bgcolor: '#FFFDF8' } } }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}><Box sx={{ fontFamily: FONTS.gmarket, fontSize: 20 }}>IBUBOM</Box><Box component="button" type="button" aria-label="메뉴 닫기" onClick={() => setMobileOpen(false)} sx={{ all: 'unset', display: 'flex', p: 1 }}><CloseRoundedIcon /></Box></Box>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, mb: 2.5 }}>
+          <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('signup'); }} sx={{ height: 40, border: 0, borderRadius: '999px', bgcolor: '#A995E8', color: '#fff', fontWeight: 900, cursor: 'pointer' }}>회원가입</Box>
+          <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('login'); }} sx={{ height: 40, border: '1px solid #D7D0E5', borderRadius: '999px', bgcolor: '#fff', fontWeight: 800, cursor: 'pointer' }}>로그인</Box>
+          <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('cart'); }} sx={{ height: 40, border: '1px solid #E5E0EA', borderRadius: 2, bgcolor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, fontWeight: 800 }}><ShoppingBagOutlinedIcon fontSize="small" />장바구니</Box>
+          <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('tracking'); }} sx={{ height: 40, border: '1px solid #E5E0EA', borderRadius: 2, bgcolor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, fontWeight: 800 }}><LocalShippingOutlinedIcon fontSize="small" />배송조회</Box>
+        </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           {NAV_CATEGORIES.map((cat) => <Box key={cat.key} component="button" type="button" onClick={() => { setMobileOpen(false); setTimeout(() => scrollToAnchor(cat.anchor), 100); }} sx={{ border: 0, bgcolor: '#fff', borderRadius: 2, p: 1.5, display: 'flex', alignItems: 'center', gap: 2, textAlign: 'left', cursor: 'pointer' }}><Box component="img" src={cat.logo} alt="" sx={{ width: 54, height: 42, objectFit: 'contain' }} /><Box sx={{ fontFamily: FONTS.gmarket, fontSize: 15 }}>{cat.label}</Box></Box>)}
         </Box>

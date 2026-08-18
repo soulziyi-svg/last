@@ -24,10 +24,12 @@ import { stageProducts } from '../../data/stageProducts';
 import { useStore } from '../../store/StoreContext';
 import { FONTS } from '../../theme/tokens';
 import useManagedProducts from '../../hooks/useManagedProducts';
+import { asset } from '../../utils/asset';
 
 const ALL_PRODUCTS = [...hanbokProducts, ...worldProducts, ...cosplayProducts, ...stageProducts];
 const periods = { '1일': 1, '1박 2일': 1.3, '2박 3일': 1.55 };
 const panelSx = { '& .MuiPaper-root': { bgcolor: '#FFFDF8', backgroundImage: 'none' } };
+const CHATBOT_IMAGE = asset('/img/chatbot.png');
 
 function SearchDialog() {
   const { dialog, setDialog } = useStore();
@@ -83,7 +85,34 @@ const quickAnswers = { '대여 방법안내':'의상을 고르고 사이즈와 �
 function ChatDrawer() {
   const { dialog, setDialog } = useStore(); const [messages,setMessages]=useState([{from:'bot',text:'안녕하세요! 입어봄 AI 도우미예요. 무엇을 도와드릴까요?'}]); const [input,setInput]=useState('');
   const send=(text)=>{if(!text.trim())return; const answer=quickAnswers[text] || '문의하신 내용을 확인했어요. 현재 데모에서는 상품별 재고 안내를 제공하며, 실제 GPT 답변은 안전한 서버 API 연결 후 사용할 수 있습니다.'; setMessages((m)=>[...m,{from:'user',text},{from:'bot',text:answer}]);setInput('');};
-  return <Drawer anchor="right" open={dialog==='chat'} onClose={()=>setDialog(null)} sx={panelSx} slotProps={{paper:{sx:{width:{xs:'100%',sm:460},p:0}}}}><Box sx={{bgcolor:'#7C4DFF',color:'#fff',p:2.5,display:'flex',justifyContent:'space-between'}}><Box><b>입어봄 AI 챗봇</b><Box sx={{fontSize:12,opacity:.8}}>대여부터 반납까지 물어보세요</Box></Box><IconButton onClick={()=>setDialog(null)} sx={{color:'#fff'}}><CloseRoundedIcon/></IconButton></Box><Box sx={{p:2,display:'flex',gap:1,flexWrap:'wrap'}}>{Object.keys(quickAnswers).map((q)=><Button key={q} size="small" variant="outlined" onClick={()=>send(q)}>{q}</Button>)}</Box><Box sx={{p:2,height:'calc(100vh - 230px)',overflowY:'auto',bgcolor:'#F7F5FB'}}>{messages.map((m,i)=><Box key={i} sx={{maxWidth:'82%',ml:m.from==='user'?'auto':0,mb:1.2,p:1.4,bgcolor:m.from==='user'?'#171717':'#fff',color:m.from==='user'?'#fff':'#171717',borderRadius:m.from==='user'?'16px 4px 16px 16px':'4px 16px 16px 16px'}}>{m.text}</Box>)}</Box><Box sx={{p:2,display:'flex',gap:1}}><TextField fullWidth multiline maxRows={4} value={input} onChange={(e)=>setInput(e.target.value)} onKeyDown={(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(input);}}} placeholder="질문을 입력하세요"/><IconButton onClick={()=>send(input)}><SendRoundedIcon/></IconButton></Box></Drawer>;
+  return (
+    <Drawer anchor="right" open={dialog==='chat'} onClose={()=>setDialog(null)} sx={panelSx} slotProps={{paper:{sx:{width:{xs:'100%',sm:480},p:0,overflow:'hidden'}}}}>
+      <Box sx={{position:'relative',overflow:'hidden',background:'linear-gradient(135deg,#6F35E8 0%,#9A48F3 55%,#E773D4 100%)',color:'#fff',px:2.5,pt:2.25,pb:2.5,display:'flex',alignItems:'center',gap:1.75}}>
+        <Box sx={{position:'absolute',width:190,height:190,borderRadius:'50%',bgcolor:'rgba(255,255,255,.12)',right:-70,top:-100}} />
+        <Box component="img" src={CHATBOT_IMAGE} alt="입어봄 챗봇" sx={{position:'relative',width:86,height:86,objectFit:'contain',filter:'drop-shadow(0 8px 12px rgba(49,12,112,.28))'}} />
+        <Box sx={{position:'relative',flex:1}}>
+          <Box sx={{display:'flex',alignItems:'center',gap:.8,fontFamily:FONTS.gmarket,fontSize:20,fontWeight:900}}>입어봄 챗봇 <Box component="span" sx={{width:8,height:8,borderRadius:'50%',bgcolor:'#75F0B7',boxShadow:'0 0 0 4px rgba(117,240,183,.2)'}} /></Box>
+          <Box sx={{fontSize:13,opacity:.9,mt:.6}}>의상 선택부터 반납까지 무엇이든 물어보세요</Box>
+        </Box>
+        <IconButton aria-label="챗봇 닫기" onClick={()=>setDialog(null)} sx={{position:'relative',color:'#fff',alignSelf:'flex-start',bgcolor:'rgba(255,255,255,.12)','&:hover':{bgcolor:'rgba(255,255,255,.22)'}}}><CloseRoundedIcon/></IconButton>
+      </Box>
+
+      <Box sx={{px:2,py:1.6,bgcolor:'#fff',borderBottom:'1px solid #EEE8F5'}}>
+        <Box sx={{fontSize:11,fontWeight:900,color:'#8E7BA8',mb:1,letterSpacing:'.08em'}}>빠른 질문</Box>
+        <Box sx={{display:'flex',gap:.8,overflowX:'auto',pb:.4,'&::-webkit-scrollbar':{display:'none'}}}>{Object.keys(quickAnswers).map((q)=><Button key={q} size="small" onClick={()=>send(q)} sx={{flex:'0 0 auto',px:1.4,border:'1px solid #DDD1F4',borderRadius:'999px',bgcolor:'#F8F4FF',color:'#6940AA',fontSize:12,fontWeight:800,textTransform:'none','&:hover':{bgcolor:'#EEE5FF',borderColor:'#B99AEE'}}}>{q}</Button>)}</Box>
+      </Box>
+
+      <Box sx={{p:2,height:'calc(100vh - 282px)',minHeight:300,overflowY:'auto',background:'linear-gradient(180deg,#FBF9FF 0%,#F4EEFC 100%)'}}>
+        <Box sx={{textAlign:'center',fontSize:11,color:'#A397B2',mb:2}}>오늘 · 입어봄 상담 도우미</Box>
+        {messages.map((m,i)=><Box key={i} sx={{display:'flex',alignItems:'flex-end',justifyContent:m.from==='user'?'flex-end':'flex-start',gap:.8,mb:1.5}}>{m.from==='bot'&&<Box component="img" src={CHATBOT_IMAGE} alt="" sx={{width:36,height:36,objectFit:'contain',flex:'0 0 auto'}}/>}<Box sx={{maxWidth:'76%',p:'12px 14px',bgcolor:m.from==='user'?'#7645D9':'#fff',color:m.from==='user'?'#fff':'#30283B',border:m.from==='user'?'0':'1px solid #ECE4F4',boxShadow:'0 5px 16px rgba(76,49,112,.08)',borderRadius:m.from==='user'?'18px 5px 18px 18px':'5px 18px 18px 18px',fontSize:14,lineHeight:1.55}}>{m.text}</Box></Box>)}
+      </Box>
+
+      <Box sx={{p:1.5,display:'flex',alignItems:'flex-end',gap:1,bgcolor:'#fff',borderTop:'1px solid #ECE5F1'}}>
+        <TextField fullWidth multiline maxRows={4} value={input} onChange={(e)=>setInput(e.target.value)} onKeyDown={(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(input);}}} placeholder="궁금한 내용을 입력해주세요" sx={{'& .MuiOutlinedInput-root':{borderRadius:'22px',bgcolor:'#F8F6FA',fontSize:14,'& fieldset':{borderColor:'#E6DFEC'},'&.Mui-focused fieldset':{borderColor:'#9672DC'}}}} />
+        <IconButton aria-label="메시지 보내기" onClick={()=>send(input)} sx={{width:46,height:46,flex:'0 0 auto',color:'#fff',background:'linear-gradient(135deg,#7140D5,#A94FE5)',boxShadow:'0 6px 15px rgba(113,64,213,.3)','&:hover':{background:'linear-gradient(135deg,#6232C4,#9840D5)'}}}><SendRoundedIcon/></IconButton>
+      </Box>
+    </Drawer>
+  );
 }
 
 function ConsultDrawer(){const {dialog,setDialog,addToCart}=useStore();const products=useManagedProducts(ALL_PRODUCTS);const [step,setStep]=useState(0);const [answers,setAnswers]=useState({});const choices=[['성별',['남자','여자']],['연령',['10대','20~30대','40대','50대','60대 이상']],['목적',['졸업사진','가족사진','여행','코스프레','공연']]];const best=products[(Object.values(answers).join('').length*7)%products.length]||products[0];return <Drawer anchor="right" open={dialog==='consult'} onClose={()=>setDialog(null)} sx={panelSx} slotProps={{paper:{sx:{width:{xs:'100%',sm:560},p:3}}}}><Box sx={{display:'flex',justifyContent:'space-between'}}><Box sx={{fontFamily:FONTS.gmarket,fontSize:24}}>AI 맞춤 의상 추천</Box><IconButton onClick={()=>setDialog(null)}><CloseRoundedIcon/></IconButton></Box><Box sx={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:1,my:3}}>{['01 성별','02 연령','03 목적','04 취향','05 추천'].map((s,i)=><Box key={s} sx={{height:5,bgcolor:i<=step?'#49D6B4':'#ddd'}} title={s}/>)}</Box>{step<3&&<Box><Box sx={{fontSize:25,fontWeight:900,mb:1}}>반갑습니다, 고객님!</Box><Box sx={{fontSize:18,mb:3}}>{choices[step][0]}을(를) 알려주세요.</Box>{choices[step][1].map(c=><Button key={c} variant="outlined" onClick={()=>{setAnswers(a=>({...a,[choices[step][0]]:c}));setStep(step+1)}} sx={{m:.7,p:2}}>{c}</Button>)}</Box>}{step===3&&<Box><Box sx={{fontSize:20,fontWeight:900,mb:2}}>마음에 드는 의상을 골라주세요.</Box><Box sx={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:1}}>{products.slice(0,15).map(p=><Box key={p.id} component="button" onClick={()=>setStep(4)} sx={{border:'1px solid #ddd',bgcolor:'#fff',p:.5,cursor:'pointer'}}><Box component="img" src={p.thumbnail} alt="" sx={{aspectRatio:'4/5',objectFit:'contain'}}/><Box sx={{fontSize:11,fontWeight:800}}>{p.name}</Box></Box>)}</Box></Box>}{step===4&&best&&<Box sx={{textAlign:'center'}}><Box sx={{fontSize:26,fontWeight:900}}>고객님 취향을 분석했어요!</Box><Box sx={{color:'#7C4DFF',fontSize:14,mt:1}}>BEST MATCH · 96%</Box><Box component="img" src={best.thumbnail} alt="" sx={{width:260,height:330,objectFit:'contain',mx:'auto',my:2,bgcolor:'#fff'}}/><Box sx={{fontSize:24,fontWeight:900}}>{best.name}</Box><Box sx={{color:'#777',my:1}}>고객님의 선택과 가장 잘 맞는 의상이에요.</Box><Box sx={{fontSize:22,fontWeight:900}}>{best.price.toLocaleString()}원</Box><Button variant="contained" onClick={()=>addToCart(best)} sx={{bgcolor:'#171717',mt:2}}>장바구니 담기</Button></Box>}</Drawer>}

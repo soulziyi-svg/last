@@ -188,7 +188,7 @@ function Header() {
                 type="button"
                 onClick={() => setDialog('signup')}
                 sx={{
-                  height: 40,
+                  height: 30,
                   px: { md: 1.5, lg: 2.25 },
                   border: 0,
                   borderRadius: '999px',
@@ -209,7 +209,7 @@ function Header() {
                 type="button"
                 onClick={() => setDialog('login')}
                 sx={{
-                  height: 40,
+                  height: 30,
                   px: { md: 1.5, lg: 2.25 },
                   border: '1px solid #D7D0E5',
                   borderRadius: '999px',
@@ -228,20 +228,20 @@ function Header() {
                 component="button"
                 type="button"
                 onClick={() => setDialog('cart')}
-                sx={{ all: 'unset', minWidth: 48, height: 48, px: { md: 0.25, lg: 0.75 }, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0.2, cursor: 'pointer', fontSize: 11, lineHeight: 1, fontWeight: 800 }}
+                aria-label="장바구니"
+                sx={{ all: 'unset', width: 40, height: 40, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
               >
                 <Badge badgeContent={cart.length} color="error"><ShoppingBagOutlinedIcon sx={{ fontSize: 23 }} /></Badge>
-                <Box component="span">장바구니</Box>
               </Box>
 
               <Box
                 component="button"
                 type="button"
                 onClick={() => setDialog('tracking')}
-                sx={{ all: 'unset', minWidth: 48, height: 48, px: { md: 0.25, lg: 0.75 }, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0.2, cursor: 'pointer', fontSize: 11, lineHeight: 1, fontWeight: 800 }}
+                aria-label="배송조회"
+                sx={{ all: 'unset', width: 40, height: 40, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
               >
                 <LocalShippingOutlinedIcon sx={{ fontSize: 23 }} />
-                <Box component="span">배송조회</Box>
               </Box>
             </Box>
 
@@ -312,8 +312,8 @@ function Header() {
       <Drawer anchor="right" open={mobileOpen} onClose={() => setMobileOpen(false)} slotProps={{ paper: { sx: { width: 'min(86vw, 360px)', p: 2.5, bgcolor: '#FFFDF8' } } }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}><Box sx={{ fontFamily: FONTS.gmarket, fontSize: 20 }}>IBUBOM</Box><Box component="button" type="button" aria-label="메뉴 닫기" onClick={() => setMobileOpen(false)} sx={{ all: 'unset', display: 'flex', p: 1 }}><CloseRoundedIcon /></Box></Box>
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, mb: 2.5 }}>
-          <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('signup'); }} sx={{ height: 40, border: 0, borderRadius: '999px', bgcolor: '#A995E8', color: '#fff', fontWeight: 900, cursor: 'pointer' }}>회원가입</Box>
-          <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('login'); }} sx={{ height: 40, border: '1px solid #D7D0E5', borderRadius: '999px', bgcolor: '#fff', fontWeight: 800, cursor: 'pointer' }}>로그인</Box>
+          <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('signup'); }} sx={{ height: 30, border: 0, borderRadius: '999px', bgcolor: '#A995E8', color: '#fff', fontWeight: 900, cursor: 'pointer' }}>회원가입</Box>
+          <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('login'); }} sx={{ height: 30, border: '1px solid #D7D0E5', borderRadius: '999px', bgcolor: '#fff', fontWeight: 800, cursor: 'pointer' }}>로그인</Box>
           <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('cart'); }} sx={{ height: 40, border: '1px solid #E5E0EA', borderRadius: 2, bgcolor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, fontWeight: 800 }}><ShoppingBagOutlinedIcon fontSize="small" />장바구니</Box>
           <Box component="button" type="button" onClick={() => { setMobileOpen(false); setDialog('tracking'); }} sx={{ height: 40, border: '1px solid #E5E0EA', borderRadius: 2, bgcolor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, fontWeight: 800 }}><LocalShippingOutlinedIcon fontSize="small" />배송조회</Box>
         </Box>

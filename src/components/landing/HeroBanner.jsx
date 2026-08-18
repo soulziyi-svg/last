@@ -80,7 +80,7 @@ function HeroBanner() {
   return (
     <Box
       component="section"
-      sx={{ width: '100%', bgcolor: COLORS.white, pt: { xs: '190px', md: '212px' }, pb: { xs: 4, md: 6 } }}
+      sx={{ width: '100%', bgcolor: COLORS.white, pt: { xs: '100px', md: '212px' }, pb: { xs: 2, md: 6 } }}
     >
       <Box
         sx={{
@@ -89,7 +89,7 @@ function HeroBanner() {
           display: 'flex',
           alignItems: 'stretch',
           position: 'relative',
-          height: { xs: '260px', sm: '360px', md: '520px' },
+          height: { xs: 'clamp(210px, 58vw, 330px)', sm: '380px', md: '520px' },
         }}
       >
         <Box
@@ -124,8 +124,8 @@ function HeroBanner() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 40,
-              height: 40,
+              width: { xs: 34, md: 40 },
+              height: { xs: 34, md: 40 },
               borderRadius: '50%',
               zIndex: 5,
             }}
@@ -149,8 +149,8 @@ function HeroBanner() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 40,
-              height: 40,
+              width: { xs: 34, md: 40 },
+              height: { xs: 34, md: 40 },
               borderRadius: '50%',
               zIndex: 5,
             }}

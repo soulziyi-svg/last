@@ -1,6 +1,9 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import AdminPage from './pages/AdminPage';
+import SiteDialogs from './components/common/SiteDialogs';
+import { StoreProvider } from './store/StoreContext';
 
 /**
  * App 컴포넌트
@@ -8,12 +11,19 @@ import ProductDetailPage from './pages/ProductDetailPage';
  */
 function App() {
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/product/:id" element={<ProductDetailPage />} />
-      </Routes>
-    </HashRouter>
+    <StoreProvider>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route
+            path="/admin"
+            element={<AdminPage readOnly={!['127.0.0.1', 'localhost'].includes(window.location.hostname)} />}
+          />
+        </Routes>
+        <SiteDialogs />
+      </HashRouter>
+    </StoreProvider>
   );
 }
 

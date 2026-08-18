@@ -6,14 +6,20 @@ import AutoSlider from '../ui/AutoSlider';
 import ProductCard from '../ui/ProductCard';
 import ProductModal from '../ui/ProductModal';
 import ReviewSection from './ReviewSection';
+import useManagedProducts from '../../hooks/useManagedProducts';
 
 function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcolor, products, popularProducts, reviews, reviewTitle }) {
   const [selected, setSelected] = useState(null);
+  const contentKey = id.replace('content-', '');
+  const managedProducts = useManagedProducts(products, contentKey);
   const sliderProducts = useMemo(() => {
-    if (popularProducts?.length) return popularProducts;
-    const categories = [...new Set(products.map((product) => product.category))];
-    return categories.flatMap((category) => products.filter((product) => product.category === category).slice(0, 2));
-  }, [products, popularProducts]);
+    if (popularProducts?.length) {
+      const popularIds = new Set(popularProducts.map((product) => product.id));
+      return managedProducts.filter((product) => popularIds.has(product.id));
+    }
+    const categories = [...new Set(managedProducts.map((product) => product.category))];
+    return categories.flatMap((category) => managedProducts.filter((product) => product.category === category).slice(0, 2));
+  }, [managedProducts, popularProducts]);
 
   return (
     <Box id={id} component="section" sx={{ width: '100%', pt: { xs: 8, md: 12 }, pb: 0, bgcolor }}>
@@ -27,8 +33,8 @@ function ProductContentSection({ id, logo, title, desc, titleFont, accent, bgcol
       </Box>
 
       <Box sx={{ width: '90%', mx: 'auto', mt: { xs: 6, md: 10 } }}>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' }, gap: { xs: 2, md: 3 } }}>
-          {products.map((product) => <ProductCard key={product.id} product={product} accentColor={accent} onOpen={setSelected} />)}
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(6, 1fr)' }, gap: { xs: 3, md: 3 } }}>
+          {managedProducts.map((product) => <ProductCard key={product.id} product={product} accentColor={accent} onOpen={setSelected} />)}
         </Box>
       </Box>
 

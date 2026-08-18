@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
 import { COLORS, FONTS, CONTENT_THEME } from '../../theme/tokens';
-import { worldProducts, worldCategories, getWorldProductsByCategory } from '../../data/worldProducts';
+import { worldProducts, worldCategories } from '../../data/worldProducts';
 import { WORLD_REVIEWS } from '../../data/worldReviewData';
 import ContentSectionHeader from './ContentSectionHeader';
 import AutoSlider from '../ui/AutoSlider';
@@ -9,15 +9,17 @@ import ProductCard from '../ui/ProductCard';
 import ProductModal from '../ui/ProductModal';
 import ReviewSection from './ReviewSection';
 import { asset } from '../../utils/asset';
+import useManagedProducts from '../../hooks/useManagedProducts';
 
 const LOGO = asset('/img/콘텐츠1/전통한복/logo03.png');
 const accent = CONTENT_THEME.world.accent;
 
 function ContentWorld() {
   const [selected, setSelected] = useState(null);
+  const managedProducts = useManagedProducts(worldProducts, 'world');
   const sliderProducts = useMemo(
-    () => worldCategories.flatMap((category) => getWorldProductsByCategory(category).slice(0, 2)),
-    []
+    () => worldCategories.flatMap((category) => managedProducts.filter((p) => p.category === category).slice(0, 2)),
+    [managedProducts]
   );
 
   return (
@@ -42,7 +44,7 @@ function ContentWorld() {
 
       <Box sx={{ width: '90%', mx: 'auto', mt: { xs: 6, md: 10 } }}>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' }, gap: { xs: 2, md: 3 } }}>
-          {worldProducts.map((product) => (
+          {managedProducts.map((product) => (
             <ProductCard key={product.id} product={product} accentColor={accent} onOpen={setSelected} />
           ))}
         </Box>

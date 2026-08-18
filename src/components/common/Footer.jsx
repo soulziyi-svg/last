@@ -31,7 +31,8 @@ function Footer() {
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'space-between',
-          gap: 6,
+          gap: { xs: 4, md: 6 },
+          flexDirection: { xs: 'column', md: 'row' },
         }}
       >
         <Box sx={{ maxWidth: '420px' }}>
@@ -57,7 +58,7 @@ function Footer() {
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: { xs: 5, md: 10 }, flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', gap: { xs: 4, md: 10 }, flexWrap: 'wrap', justifyContent: { xs: 'space-between', md: 'flex-start' } }}>
           <Box>
             <Box
               sx={{

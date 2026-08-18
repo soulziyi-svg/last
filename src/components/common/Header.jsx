@@ -4,12 +4,18 @@ import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import Badge from '@mui/material/Badge';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import Drawer from '@mui/material/Drawer';
 import { COLORS, FONTS } from '../../theme/tokens';
 import { NAV_CATEGORIES, MENU_BY_KEY } from '../../data/menuData';
 import { hanbokCategories, getHanbokProductsByCategory } from '../../data/hanbokProducts';
 import useHeaderScrolled from '../../hooks/useHeaderScrolled';
 import TopMarquee from './TopMarquee';
 import MegaMenu from './MegaMenu';
+import { useStore } from '../../store/StoreContext';
 
 const scrollToAnchor = (anchor) => {
   document.querySelector(anchor)?.scrollIntoView({ behavior: 'smooth' });
@@ -26,6 +32,9 @@ function Header() {
   const navigate = useNavigate();
   const isScrolled = useHeaderScrolled(40);
   const [openKey, setOpenKey] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const { cart, user, setDialog, setUser, setToast } = useStore();
 
   const columnsByKey = useMemo(() => {
     const hanbokColumns = hanbokCategories.map((cat) => ({
@@ -69,7 +78,7 @@ function Header() {
         sx={{
           width: '100%',
           bgcolor: COLORS.white,
-          height: isScrolled ? '78px' : '176px',
+          height: { xs: '68px', md: isScrolled ? '78px' : '176px' },
           transition: 'height 0.25s ease',
           borderBottom: `1px solid rgba(23,23,23,0.08)`,
           display: 'flex',
@@ -80,7 +89,7 @@ function Header() {
       >
         {/* category nav + icons + mega menu */}
         <Box
-          sx={{ position: 'relative' }}
+          sx={{ position: 'relative', display: { xs: 'none', md: 'block' } }}
           onMouseLeave={() => setOpenKey(null)}
         >
           <Box
@@ -152,13 +161,20 @@ function Header() {
               }}
               onMouseEnter={() => setOpenKey(null)}
             >
-              {[SearchIcon, PersonOutlineIcon, ShoppingBagOutlinedIcon].map(
-                (Icon, i) => (
+              {user && <Box sx={{ fontSize: 12, fontWeight: 800, whiteSpace: 'nowrap' }}>{user.email.split('@')[0]}님 반갑습니다.</Box>}
+              {[
+                [SearchIcon, '검색', 'search'],
+                [PersonOutlineIcon, '회원 메뉴', 'account'],
+                [ShoppingBagOutlinedIcon, '장바구니', 'cart'],
+                [LocalShippingOutlinedIcon, '배송조회', 'tracking'],
+              ].map(([Icon, label, action]) => (
                   <Box
-                    key={i}
+                    key={action}
                     component="button"
                     type="button"
-                    aria-label="icon"
+                    aria-label={label}
+                    onClick={() => action === 'account' ? setAccountOpen((v) => !v) : setDialog(action)}
+                    onMouseEnter={() => action === 'account' && setAccountOpen(true)}
                     sx={{
                       all: 'unset',
                       cursor: 'pointer',
@@ -166,15 +182,16 @@ function Header() {
                       color: COLORS.black,
                     }}
                   >
+                    <Badge badgeContent={action === 'cart' ? cart.length : 0} color="error">
                     <Icon
                       sx={{
                         fontSize: isScrolled ? '20px' : '26px',
                         transition: 'font-size 0.25s ease',
                       }}
-                    />
+                    /></Badge>
                   </Box>
-                )
-              )}
+              ))}
+              {accountOpen && <Box onMouseLeave={() => setAccountOpen(false)} sx={{ position: 'absolute', right: 48, top: 32, width: 170, bgcolor: '#fff', border: '1px solid #ddd', p: 1, animation: 'slide-down .2s ease' }}>{user ? <Box component="button" onClick={() => { setUser(null); setAccountOpen(false); setToast('로그아웃 되었습니다.'); }} sx={{ width:'100%', border:0, bgcolor:'#fff', p:1.2, textAlign:'left', cursor:'pointer' }}>로그아웃</Box> : <><Box component="button" onClick={() => {setDialog('signup');setAccountOpen(false)}} sx={{width:'100%',border:0,bgcolor:'#fff',p:1.2,textAlign:'left'}}>회원가입</Box><Box component="button" onClick={() => {setDialog('login');setAccountOpen(false)}} sx={{width:'100%',border:0,bgcolor:'#fff',p:1.2,textAlign:'left'}}>로그인</Box></>}<Box component="button" onClick={() => {setDialog('chat');setAccountOpen(false)}} sx={{width:'100%',border:0,bgcolor:'#fff',p:1.2,textAlign:'left'}}>1:1 문의 (챗봇)</Box><Box component="button" onClick={() => {setDialog('consult');setAccountOpen(false)}} sx={{width:'100%',border:0,bgcolor:'#fff',p:1.2,textAlign:'left'}}>상담하기</Box></Box>}
             </Box>
           </Box>
 
@@ -185,7 +202,23 @@ function Header() {
             onMouseLeave={() => setOpenKey(null)}
           />
         </Box>
+
+        <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', justifyContent: 'space-between', width: '100%', px: 2 }}>
+          <Box component="button" type="button" onClick={() => navigate('/')} sx={{ all: 'unset', cursor: 'pointer', fontFamily: FONTS.gmarket, fontSize: 20, fontWeight: 900, letterSpacing: '.08em' }}>IBUBOM</Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: .5 }}>
+            <Box component="button" type="button" aria-label="검색" onClick={() => setDialog('search')} sx={{ all: 'unset', display: 'flex', p: 1 }}><SearchIcon /></Box>
+            <Box component="button" type="button" aria-label="장바구니" onClick={() => setDialog('cart')} sx={{ all: 'unset', display: 'flex', p: 1 }}><Badge badgeContent={cart.length} color="error"><ShoppingBagOutlinedIcon /></Badge></Box>
+            <Box component="button" type="button" aria-label="메뉴 열기" onClick={() => setMobileOpen(true)} sx={{ all: 'unset', display: 'flex', p: 1 }}><MenuRoundedIcon /></Box>
+          </Box>
+        </Box>
       </Box>
+
+      <Drawer anchor="right" open={mobileOpen} onClose={() => setMobileOpen(false)} slotProps={{ paper: { sx: { width: 'min(86vw, 360px)', p: 2.5, bgcolor: '#FFFDF8' } } }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}><Box sx={{ fontFamily: FONTS.gmarket, fontSize: 20 }}>IBUBOM</Box><Box component="button" type="button" aria-label="메뉴 닫기" onClick={() => setMobileOpen(false)} sx={{ all: 'unset', display: 'flex', p: 1 }}><CloseRoundedIcon /></Box></Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          {NAV_CATEGORIES.map((cat) => <Box key={cat.key} component="button" type="button" onClick={() => { setMobileOpen(false); setTimeout(() => scrollToAnchor(cat.anchor), 100); }} sx={{ border: 0, bgcolor: '#fff', borderRadius: 2, p: 1.5, display: 'flex', alignItems: 'center', gap: 2, textAlign: 'left', cursor: 'pointer' }}><Box component="img" src={cat.logo} alt="" sx={{ width: 54, height: 42, objectFit: 'contain' }} /><Box sx={{ fontFamily: FONTS.gmarket, fontSize: 15 }}>{cat.label}</Box></Box>)}
+        </Box>
+      </Drawer>
     </Box>
   );
 }

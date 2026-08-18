@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
 import { COLORS, FONTS, CONTENT_THEME } from '../../theme/tokens';
-import { hanbokProducts, hanbokCategories, getHanbokProductsByCategory } from '../../data/hanbokProducts';
+import { hanbokProducts, hanbokCategories } from '../../data/hanbokProducts';
 import { HANBOK_REVIEWS } from '../../data/reviewData';
 import ContentSectionHeader from './ContentSectionHeader';
 import AutoSlider from '../ui/AutoSlider';
@@ -9,6 +9,7 @@ import ProductCard from '../ui/ProductCard';
 import ProductModal from '../ui/ProductModal';
 import ReviewSection from './ReviewSection';
 import { asset } from '../../utils/asset';
+import useManagedProducts from '../../hooks/useManagedProducts';
 
 const LOGO = asset('/img/콘텐츠1/전통한복/logo02.png');
 const HANJI_BG = asset('/img/background.jpg');
@@ -23,10 +24,11 @@ const accent = CONTENT_THEME.hanbok.accent;
  */
 function ContentHanbok() {
   const [selected, setSelected] = useState(null);
+  const managedProducts = useManagedProducts(hanbokProducts, 'hanbok');
 
   const sliderProducts = useMemo(
-    () => hanbokCategories.flatMap((cat) => getHanbokProductsByCategory(cat).slice(0, 2)),
-    []
+    () => hanbokCategories.flatMap((cat) => managedProducts.filter((p) => p.category === cat).slice(0, 2)),
+    [managedProducts]
   );
 
   return (
@@ -94,15 +96,15 @@ function ContentHanbok() {
           sx={{
             display: 'grid',
             gridTemplateColumns: {
-              xs: 'repeat(2, 1fr)',
-              sm: 'repeat(3, 1fr)',
-              md: 'repeat(4, 1fr)',
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
               lg: 'repeat(6, 1fr)',
             },
             gap: { xs: 2, md: 3 },
           }}
         >
-          {hanbokProducts.map((product) => (
+          {managedProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}

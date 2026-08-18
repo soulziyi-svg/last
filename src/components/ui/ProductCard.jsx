@@ -2,11 +2,10 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Rating from '@mui/material/Rating';
-import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
-import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { COLORS, FONTS } from '../../theme/tokens';
 import { asset } from '../../utils/asset';
+import { useStore } from '../../store/StoreContext';
 
 /**
  * ProductCard 컴포넌트
@@ -21,8 +20,8 @@ import { asset } from '../../utils/asset';
  */
 function ProductCard({ product, accentColor, onOpen }) {
   const [hover, setHover] = useState(false);
-  const [liked, setLiked] = useState(false);
-  const [inCart, setInCart] = useState(false);
+  const { cart, addToCart } = useStore();
+  const inCart = cart.some((item) => item.id === product.id);
   const wornImage = product.images[1] || product.images[0];
   const countryFlags = {
     일본: asset('/img/flags/japan.svg'),
@@ -31,8 +30,8 @@ function ProductCard({ product, accentColor, onOpen }) {
     태국: asset('/img/flags/thailand.svg'),
   };
   const countryFlag = product.contentKey === 'world' ? countryFlags[product.category] : null;
-  const showActions = product.contentKey === 'hanbok' || product.contentKey === 'world';
-  const showDetailedDescription = product.contentKey === 'hanbok' || product.contentKey === 'world';
+  const showActions = true;
+  const showDetailedDescription = true;
   const cardDescription = showDetailedDescription
     ? product.history || product.description || product.shortDesc
     : product.shortDesc;
@@ -163,15 +162,8 @@ function ProductCard({ product, accentColor, onOpen }) {
             }}
           >
             <IconButton
-              aria-label={liked ? '좋아요 취소' : '좋아요'}
-              onClick={(event) => stopCardAction(event, () => setLiked((value) => !value))}
-              sx={{ width: 34, height: 34, bgcolor: 'rgba(255,255,255,0.94)', color: liked ? '#E23B61' : COLORS.black, boxShadow: '0 3px 12px rgba(0,0,0,0.2)', '&:hover': { bgcolor: COLORS.white } }}
-            >
-              {liked ? <FavoriteRoundedIcon sx={{ fontSize: 19 }} /> : <FavoriteBorderRoundedIcon sx={{ fontSize: 19 }} />}
-            </IconButton>
-            <IconButton
-              aria-label={inCart ? '장바구니에서 빼기' : '장바구니 담기'}
-              onClick={(event) => stopCardAction(event, () => setInCart((value) => !value))}
+              aria-label={inCart ? '장바구니에 담긴 상품' : '장바구니 담기'}
+              onClick={(event) => stopCardAction(event, () => addToCart(product))}
               sx={{ width: 34, height: 34, bgcolor: inCart ? accentColor : 'rgba(255,255,255,0.94)', color: inCart ? COLORS.white : COLORS.black, boxShadow: '0 3px 12px rgba(0,0,0,0.2)', '&:hover': { bgcolor: inCart ? accentColor : COLORS.white } }}
             >
               <ShoppingCartOutlinedIcon sx={{ fontSize: 19 }} />
@@ -184,7 +176,7 @@ function ProductCard({ product, accentColor, onOpen }) {
         <Box
           sx={{
             fontFamily: FONTS.gmarket,
-            fontSize: '14px',
+            fontSize: { xs: '16px', sm: '14px' },
             color: COLORS.black,
             mb: 0.5,
           }}

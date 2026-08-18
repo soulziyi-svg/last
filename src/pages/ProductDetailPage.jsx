@@ -5,10 +5,13 @@ import Rating from '@mui/material/Rating';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { COLORS, FONTS, CONTENT_THEME } from '../theme/tokens';
-import { getHanbokProductById } from '../data/hanbokProducts';
-import { getWorldProductById } from '../data/worldProducts';
-import { getCosplayProductById } from '../data/cosplayProducts';
-import { getStageProductById } from '../data/stageProducts';
+import { hanbokProducts } from '../data/hanbokProducts';
+import { worldProducts } from '../data/worldProducts';
+import { cosplayProducts } from '../data/cosplayProducts';
+import { stageProducts } from '../data/stageProducts';
+import useManagedProducts from '../hooks/useManagedProducts';
+
+const ALL_PRODUCTS = [...hanbokProducts, ...worldProducts, ...cosplayProducts, ...stageProducts];
 import Footer from '../components/common/Footer';
 import { asset } from '../utils/asset';
 
@@ -24,7 +27,8 @@ const BRAND_LOGO = asset('/img/콘텐츠1/전통한복/logo02.png');
 function ProductDetailPage() {
   const { id } = useParams();
   const decodedId = decodeURIComponent(id);
-  const product = getHanbokProductById(decodedId) || getWorldProductById(decodedId) || getCosplayProductById(decodedId) || getStageProductById(decodedId);
+  const products = useManagedProducts(ALL_PRODUCTS);
+  const product = products.find((item) => item.id === decodedId);
   const [activeImg, setActiveImg] = useState(0);
   const [wished, setWished] = useState(false);
   const accent = product ? (CONTENT_THEME[product.contentKey]?.accent || CONTENT_THEME.hanbok.accent) : CONTENT_THEME.hanbok.accent;

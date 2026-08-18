@@ -32,7 +32,8 @@ function RentalTimeline() {
         하루를 빌리고, 추억은 가져가세요
       </Box>
 
-      <Box sx={{ width: '80%', maxWidth: '1600px', mx: 'auto' }}>
+      <Box sx={{ width: { xs: '94%', md: '80%' }, maxWidth: '1600px', mx: 'auto', overflowX: { xs: 'auto', md: 'visible' } }}>
+        <Box sx={{ minWidth: { xs: 720, md: 0 } }}>
         <Box
           component="img"
           src={asset('/img/time.png?v=20260817')}
@@ -75,6 +76,7 @@ function RentalTimeline() {
               </Box>
             </Box>
           ))}
+        </Box>
         </Box>
       </Box>
     </Box>

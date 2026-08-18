@@ -48,7 +48,10 @@ body {
   scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  overflow-x: hidden;
 }
+
+body { min-width: 320px; }
 
 #root {
   width: 100%;

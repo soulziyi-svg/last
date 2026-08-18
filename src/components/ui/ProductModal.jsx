@@ -3,9 +3,9 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import CloseIcon from '@mui/icons-material/Close';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { COLORS, FONTS } from '../../theme/tokens';
+import { useStore } from '../../store/StoreContext';
 
 /**
  * ProductModal 컴포넌트
@@ -21,12 +21,11 @@ import { COLORS, FONTS } from '../../theme/tokens';
  */
 function ProductModal({ product, open, onClose, accentColor }) {
   const [activeImg, setActiveImg] = useState(0);
-  const [wished, setWished] = useState(false);
+  const { addToCart, cart } = useStore();
 
   useEffect(() => {
     if (open) {
       setActiveImg(0);
-      setWished(false);
     }
   }, [open, product]);
 
@@ -130,11 +129,11 @@ function ProductModal({ product, open, onClose, accentColor }) {
               <Box
                 component="button"
                 type="button"
-                onClick={() => setWished((w) => !w)}
-                aria-label="찜하기"
-                sx={{ all: 'unset', cursor: 'pointer', color: accentColor, display: 'flex' }}
+                onClick={() => addToCart(product)}
+                aria-label="장바구니 담기"
+                sx={{ cursor: 'pointer', color: COLORS.white, display: 'flex', alignItems: 'center', gap: 1, border: 0, bgcolor: accentColor, px: 2, py: 1, fontWeight: 800 }}
               >
-                {wished ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                <ShoppingCartOutlinedIcon /> {cart.some((item) => item.id === product.id) ? '담긴 상품' : '장바구니'}
               </Box>
             </Box>
           </Box>

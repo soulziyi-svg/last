@@ -14,6 +14,7 @@ import useManagedProducts from '../hooks/useManagedProducts';
 const ALL_PRODUCTS = [...hanbokProducts, ...worldProducts, ...cosplayProducts, ...stageProducts];
 import Footer from '../components/common/Footer';
 import { asset } from '../utils/asset';
+import NezukoDetailPage from './NezukoDetailPage';
 
 const BRAND_LOGO = asset('/img/콘텐츠1/전통한복/logo02.png');
 
@@ -39,6 +40,10 @@ function ProductDetailPage() {
         상품을 찾을 수 없습니다. <Link to="/">홈으로 돌아가기</Link>
       </Box>
     );
+  }
+
+  if (product.id === 'cosplay-38') {
+    return <NezukoDetailPage product={product} />;
   }
 
   const thumbs = [...product.images, ...product.accessories.map((a) => a.src)].slice(0, 5);

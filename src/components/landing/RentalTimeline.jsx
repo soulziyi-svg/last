@@ -36,7 +36,7 @@ function RentalTimeline() {
         <Box sx={{ minWidth: { xs: 720, md: 0 } }}>
         <Box
           component="img"
-          src={asset('/img/time.png?v=20260817')}
+          src={asset('/img/time.png?v=20260819-new')}
           alt="의상 선택, 사이즈와 날짜 선택, 배송받기, 신나게 입기, 문 앞 반납으로 이어지는 입어봄 대여 방법"
           sx={{
             display: 'block',

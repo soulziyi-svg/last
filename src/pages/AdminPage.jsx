@@ -28,6 +28,7 @@ import { cosplayProducts } from '../data/cosplayProducts';
 import { stageProducts } from '../data/stageProducts';
 import { FONTS } from '../theme/tokens';
 import useManagedProducts, { deleteManagedProduct, saveManagedProducts, resetManagedProducts } from '../hooks/useManagedProducts';
+import DetailPageManager from '../components/admin/DetailPageManager';
 
 const allProducts = [...hanbokProducts, ...worldProducts, ...cosplayProducts, ...stageProducts];
 const initialOrders = [
@@ -112,13 +113,15 @@ function AdminPage({ readOnly = false }) {
 
         <Paper elevation={0} sx={{ borderRadius: 3, border: '1px solid #E7E8EC', overflow: 'hidden' }}>
           <Box sx={{ px: { xs: 2, md: 3 }, pt: 2, display: 'flex', gap: 1, overflowX: 'auto', borderBottom: '1px solid #ECEDEF' }}>
-            {[['products','상품 관리'],['schedule','예약 달력'],['inventory','재고·사이즈'],['orders','주문 관리'],['reviews','후기 관리']].map(([key,label]) => <Button key={key} onClick={() => setTab(key)} sx={{ color: tab === key ? '#171717' : '#8A8D95', fontWeight: 800, whiteSpace: 'nowrap', borderRadius: 0, borderBottom: tab === key ? '3px solid #171717' : '3px solid transparent', px: 2, pb: 1.5 }}>{label}</Button>)}
+            {[['products','상품 관리'],['detail','상세페이지 관리'],['schedule','예약 달력'],['inventory','재고·사이즈'],['orders','주문 관리'],['reviews','후기 관리']].map(([key,label]) => <Button key={key} onClick={() => setTab(key)} sx={{ color: tab === key ? '#171717' : '#8A8D95', fontWeight: 800, whiteSpace: 'nowrap', borderRadius: 0, borderBottom: tab === key ? '3px solid #171717' : '3px solid transparent', px: 2, pb: 1.5 }}>{label}</Button>)}
           </Box>
 
           {tab === 'products' && <Box sx={{ p: { xs: 2, md: 3 } }}>
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', gap: 2, mb: 2.5 }}><TextField size="small" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="상품명 또는 카테고리 검색" sx={{ width: { xs: '100%', sm: 360 } }} InputProps={{ startAdornment: <InputAdornment position="start"><SearchRoundedIcon /></InputAdornment> }} />{!readOnly && <Box sx={{ display: 'flex', gap: 1 }}><Button variant="outlined" onClick={() => { resetManagedProducts(); setQuery(''); }}>초기화</Button><Button variant="contained" onClick={() => openProductForm(null)} sx={{ bgcolor: '#171717', fontWeight: 800 }}>상품 등록</Button></Box>}</Box>
             <Box sx={{ overflowX: 'auto' }}><Box component="table" sx={{ width: '100%', minWidth: 720, borderCollapse: 'collapse', '& th': { textAlign: 'left', color: '#7B7E86', fontSize: 12, py: 1.5, borderBottom: '1px solid #ECEDEF' }, '& td': { py: 1.4, borderBottom: '1px solid #F0F1F3', fontSize: 13 } }}><thead><tr><th>상품</th><th>카테고리</th><th>대여가</th><th>별점</th><th>상태</th>{!readOnly && <th>관리</th>}</tr></thead><tbody>{products.map((p) => <tr key={p.id}><td><Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 700 }}><Box component="img" src={p.thumbnail} alt="" sx={{ width: 44, height: 56, objectFit: 'cover', borderRadius: 1, bgcolor: '#f3f3f3' }} />{p.name}</Box></td><td>{p.category}</td><td>{p.price?.toLocaleString()}원</td><td>★ {p.rating}</td><td><Chip size="small" label="판매 중" color="success" variant="outlined" /></td>{!readOnly && <td><Button size="small" onClick={() => openProductForm(p)}>수정</Button><Button size="small" color="error" onClick={() => deleteProduct(p.id)}>삭제</Button></td>}</tr>)}</tbody></Box></Box>
           </Box>}
+
+          {tab === 'detail' && <DetailPageManager readOnly={readOnly} />}
 
           {tab === 'schedule' && <Box sx={{ p: { xs: 2, md: 3 }, overflowX: 'auto' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}><Box sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 20, fontWeight: 900 }}><CalendarMonthOutlinedIcon /> 2026년 8월</Box><Box sx={{ display: 'flex', gap: 1 }}><Chip size="small" label="대여" sx={{ color: '#7C4DFF' }} /><Chip size="small" label="반납" sx={{ color: '#E8A527' }} /></Box></Box>

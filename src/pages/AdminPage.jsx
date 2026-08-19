@@ -31,6 +31,7 @@ import useManagedProducts, { deleteManagedProduct, saveManagedProducts, resetMan
 import DetailPageManager from '../components/admin/DetailPageManager';
 import { readDetailPage, saveDetailPage } from '../hooks/useManagedDetailPage';
 import { makeProductDetailDefaults } from '../data/nezukoDetailDefaults';
+import MainPageManager from '../components/admin/MainPageManager';
 
 const allProducts = [...hanbokProducts, ...worldProducts, ...cosplayProducts, ...stageProducts];
 const initialOrders = [
@@ -133,7 +134,7 @@ function AdminPage({ readOnly = false }) {
 
         <Paper elevation={0} sx={{ borderRadius: 3, border: '1px solid #E7E8EC', overflow: 'hidden' }}>
           <Box sx={{ px: { xs: 2, md: 3 }, pt: 2, display: 'flex', gap: 1, overflowX: 'auto', borderBottom: '1px solid #ECEDEF' }}>
-            {[['products','상품 관리'],['detail','상세페이지 관리'],['schedule','예약 달력'],['inventory','재고·사이즈'],['orders','주문 관리'],['reviews','후기 관리']].map(([key,label]) => <Button key={key} onClick={() => setTab(key)} sx={{ color: tab === key ? '#171717' : '#8A8D95', fontWeight: 800, whiteSpace: 'nowrap', borderRadius: 0, borderBottom: tab === key ? '3px solid #171717' : '3px solid transparent', px: 2, pb: 1.5 }}>{label}</Button>)}
+            {[['products','상품 관리'],['main','메인페이지 관리'],['detail','상세페이지 관리'],['schedule','예약 달력'],['inventory','재고·사이즈'],['orders','주문 관리'],['reviews','후기 관리']].map(([key,label]) => <Button key={key} onClick={() => setTab(key)} sx={{ color: tab === key ? '#171717' : '#8A8D95', fontWeight: 800, whiteSpace: 'nowrap', borderRadius: 0, borderBottom: tab === key ? '3px solid #171717' : '3px solid transparent', px: 2, pb: 1.5 }}>{label}</Button>)}
           </Box>
 
           {tab === 'products' && <Box sx={{ p: { xs: 2, md: 3 } }}>
@@ -141,6 +142,7 @@ function AdminPage({ readOnly = false }) {
             <Box sx={{ overflowX: 'auto' }}><Box component="table" sx={{ width: '100%', minWidth: 720, borderCollapse: 'collapse', '& th': { textAlign: 'left', color: '#7B7E86', fontSize: 12, py: 1.5, borderBottom: '1px solid #ECEDEF' }, '& td': { py: 1.4, borderBottom: '1px solid #F0F1F3', fontSize: 13 } }}><thead><tr><th>상품</th><th>카테고리</th><th>대여가</th><th>별점</th><th>상태</th>{!readOnly && <th>관리</th>}</tr></thead><tbody>{products.map((p) => <tr key={p.id}><td><Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 700 }}><Box component="img" src={p.thumbnail} alt="" sx={{ width: 44, height: 56, objectFit: 'cover', borderRadius: 1, bgcolor: '#f3f3f3' }} />{p.name}</Box></td><td>{p.category}</td><td>{p.price?.toLocaleString()}원</td><td>★ {p.rating}</td><td><Chip size="small" label="판매 중" color="success" variant="outlined" /></td>{!readOnly && <td><Button size="small" onClick={() => openProductForm(p)}>수정</Button><Button size="small" color="error" onClick={() => deleteProduct(p.id)}>삭제</Button></td>}</tr>)}</tbody></Box></Box>
           </Box>}
 
+          {tab === 'main' && <MainPageManager readOnly={readOnly} />}
           {tab === 'detail' && <DetailPageManager readOnly={readOnly} managedProducts={managedProducts} />}
 
           {tab === 'schedule' && <Box sx={{ p: { xs: 2, md: 3 }, overflowX: 'auto' }}>

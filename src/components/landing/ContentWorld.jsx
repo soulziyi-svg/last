@@ -14,7 +14,7 @@ import useManagedProducts from '../../hooks/useManagedProducts';
 const LOGO = asset('/img/콘텐츠1/전통한복/logo03.png');
 const accent = CONTENT_THEME.world.accent;
 
-function ContentWorld() {
+function ContentWorld({ content }) {
   const [selected, setSelected] = useState(null);
   const managedProducts = useManagedProducts(worldProducts, 'world');
   const sliderProducts = useMemo(
@@ -26,8 +26,8 @@ function ContentWorld() {
     <Box id="content-world" component="section" sx={{ width: '100%', pt: { xs: 8, md: 12 }, pb: 0, bgcolor: CONTENT_THEME.world.bg }}>
       <ContentSectionHeader
         logo={LOGO}
-        title="오늘은 세계를 입어봄"
-        desc={'비행기 없이 떠나는 세계 의상 여행.\n일본의 기모노부터 중국의 치파오, 베트남의 아오자이와 태국 전통복까지 만나보세요.\n낯선 문화를 가장 가까이에서 입고 특별한 하루를 완성해드립니다.'}
+        title={content?.title || '오늘은 세계를 입어봄'}
+        desc={content?.desc || '비행기 없이 떠나는 세계 의상 여행.\n일본의 기모노부터 중국의 치파오, 베트남의 아오자이와 태국 전통복까지 만나보세요.\n낯선 문화를 가장 가까이에서 입고 특별한 하루를 완성해드립니다.'}
         titleFont={FONTS.paperlogy}
         accentColor={accent}
         logoHeight="120px"

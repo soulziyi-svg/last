@@ -14,7 +14,7 @@ const AUTO_PLAY_MS = 4500;
  * Example usage:
  * <HeroBanner />
  */
-function HeroBanner() {
+function HeroBanner({ content }) {
   const total = MAIN_BANNERS.length;
   const [index, setIndex] = useState(0);
   const timerRef = useRef(null);
@@ -106,6 +106,7 @@ function HeroBanner() {
         </Box>
         <Box sx={{ width: { xs: '100%', md: '80%' }, height: '100%', position: 'relative' }}>
           <Slide item={MAIN_BANNERS[index]} variant="main" />
+          {content?.visible && <Box sx={{position:'absolute',left:'50%',top:'50%',transform:'translate(-50%,-50%)',zIndex:4,width:{xs:'82%',md:'70%'},textAlign:'center',color:'#fff',textShadow:'0 2px 14px rgba(0,0,0,.55)'}}><Box sx={{fontSize:{xs:25,md:48},fontWeight:900,lineHeight:1.2}}>{content.title}</Box><Box sx={{fontSize:{xs:13,md:18},mt:1.5}}>{content.subtitle}</Box><Box component="a" href="#content-hanbok" sx={{display:'inline-block',mt:{xs:2,md:3},px:{xs:2.5,md:4},py:{xs:1,md:1.4},bgcolor:'#7C4DFF',color:'#fff',borderRadius:99,fontWeight:900,textShadow:'none'}}>{content.buttonText}</Box></Box>}
 
           <Box
             component="button"

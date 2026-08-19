@@ -22,7 +22,7 @@ const accent = CONTENT_THEME.hanbok.accent;
  * Example usage:
  * <ContentHanbok />
  */
-function ContentHanbok() {
+function ContentHanbok({ content }) {
   const [selected, setSelected] = useState(null);
   const managedProducts = useManagedProducts(hanbokProducts, 'hanbok');
 
@@ -46,8 +46,8 @@ function ContentHanbok() {
     >
       <ContentSectionHeader
         logo={LOGO}
-        title="오늘은 한국의 아름다움을 입어봄"
-        desc="한국의 전통의상을 입고 구석구석 한국의 아름다움을 느껴보세요. 한복 외에도 결혼 예복, 관복, 선비, 노비 의상까지 — 조선의 하루를 그대로 빌려드립니다."
+        title={content?.title || '오늘은 한국의 아름다움을 입어봄'}
+        desc={content?.desc || '한국의 전통의상을 입고 구석구석 한국의 아름다움을 느껴보세요. 한복 외에도 결혼 예복, 관복, 선비, 노비 의상까지 — 조선의 하루를 그대로 빌려드립니다.'}
         titleFont={FONTS.doHyeon}
         accentColor={accent}
         logoHeight="120px"

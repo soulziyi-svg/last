@@ -17,7 +17,7 @@ const RENTAL_STEPS = [
  * Example usage:
  * <RentalTimeline />
  */
-function RentalTimeline() {
+function RentalTimeline({ title = '하루를 빌리고, 추억은 가져가세요' }) {
   return (
     <Box component="section" sx={{ width: '100%', bgcolor: '#FCF5EE', pt: { xs: 5, md: 7 }, pb: { xs: 7, md: 11 } }}>
       <Box
@@ -29,7 +29,7 @@ function RentalTimeline() {
           mb: { xs: 3, md: 4 },
         }}
       >
-        하루를 빌리고, 추억은 가져가세요
+        {title}
       </Box>
 
       <Box sx={{ width: { xs: '94%', md: '80%' }, maxWidth: '1600px', mx: 'auto', overflowX: { xs: 'auto', md: 'visible' } }}>

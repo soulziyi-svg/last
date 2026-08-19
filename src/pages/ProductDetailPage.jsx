@@ -10,6 +10,8 @@ import { worldProducts } from '../data/worldProducts';
 import { cosplayProducts } from '../data/cosplayProducts';
 import { stageProducts } from '../data/stageProducts';
 import useManagedProducts from '../hooks/useManagedProducts';
+import useManagedDetailPage from '../hooks/useManagedDetailPage';
+import { makeProductDetailDefaults, nezukoDetailDefaults } from '../data/nezukoDetailDefaults';
 
 const ALL_PRODUCTS = [...hanbokProducts, ...worldProducts, ...cosplayProducts, ...stageProducts];
 import Footer from '../components/common/Footer';
@@ -17,6 +19,7 @@ import { asset } from '../utils/asset';
 import NezukoDetailPage from './NezukoDetailPage';
 
 const BRAND_LOGO = asset('/img/콘텐츠1/전통한복/logo02.png');
+const imageUrl = (src) => /^https?:|^data:|^blob:/.test(src || '') || src?.startsWith(import.meta.env.BASE_URL) ? src : asset(src);
 
 /**
  * ProductDetailPage 컴포넌트
@@ -30,6 +33,7 @@ function ProductDetailPage() {
   const decodedId = decodeURIComponent(id);
   const products = useManagedProducts(ALL_PRODUCTS);
   const product = products.find((item) => item.id === decodedId);
+  const detail = useManagedDetailPage(decodedId, product ? makeProductDetailDefaults(product) : nezukoDetailDefaults);
   const [activeImg, setActiveImg] = useState(0);
   const [wished, setWished] = useState(false);
   const accent = product ? (CONTENT_THEME[product.contentKey]?.accent || CONTENT_THEME.hanbok.accent) : CONTENT_THEME.hanbok.accent;
@@ -46,7 +50,7 @@ function ProductDetailPage() {
     return <NezukoDetailPage product={product} />;
   }
 
-  const thumbs = [...product.images, ...product.accessories.map((a) => a.src)].slice(0, 5);
+  const thumbs = [detail.images.main, detail.images.thumbnail, detail.images.worn, detail.images.accessories].filter(Boolean);
 
   return (
     <Box sx={{ width: '100%', minHeight: '100vh', bgcolor: COLORS.white, display: 'flex', flexDirection: 'column' }}>
@@ -77,7 +81,7 @@ function ProductDetailPage() {
       >
         <Box sx={{ width: { xs: '100%', md: '55%' } }}>
           <Box sx={{ width: '100%', aspectRatio: '4 / 5', bgcolor: '#F7F5F0', overflow: 'hidden', mb: 2 }}>
-            <Box component="img" src={thumbs[activeImg]} alt={product.name} sx={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <Box component="img" src={imageUrl(thumbs[activeImg])} alt={detail.productName} sx={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </Box>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             {thumbs.map((src, i) => (
@@ -95,7 +99,7 @@ function ProductDetailPage() {
                   outline: i === activeImg ? `2px solid ${accent}` : '1px solid rgba(23,23,23,0.15)',
                 }}
               >
-                <Box component="img" src={src} alt="" sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <Box component="img" src={imageUrl(src)} alt="" sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </Box>
             ))}
           </Box>
@@ -103,10 +107,10 @@ function ProductDetailPage() {
 
         <Box sx={{ width: { xs: '100%', md: '45%' } }}>
           <Box sx={{ fontFamily: FONTS.pretendard, fontSize: '13px', color: accent, mb: 1 }}>
-            {{ hanbok: '전통한복', world: '세계 전통의상', cosplay: '코스프레', stage: '공연의상' }[product.contentKey]} · {product.category}
+            {{ hanbok: '전통한복', world: '세계 전통의상', cosplay: '코스프레', stage: '공연의상' }[product.contentKey]} · {detail.category}
           </Box>
           <Box sx={{ fontFamily: FONTS.gmarket, fontSize: '30px', color: COLORS.black, mb: 1.5 }}>
-            {product.name}
+            {detail.productName}
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', mb: 3 }}>
             <Rating value={product.rating} precision={0.5} size="small" readOnly />
@@ -116,7 +120,7 @@ function ProductDetailPage() {
           </Box>
 
           <Box sx={{ fontFamily: FONTS.pretendard, fontWeight: 700, fontSize: '28px', color: COLORS.black, mb: 3 }}>
-            {product.price.toLocaleString()}원
+            {Number(detail.price).toLocaleString()}원
             <Box component="span" sx={{ fontSize: '14px', fontWeight: 400, color: 'rgba(23,23,23,0.55)', ml: 1 }}>
               / {product.rentalPeriod}
             </Box>
@@ -125,18 +129,18 @@ function ProductDetailPage() {
           <Box sx={{ mb: 3 }}>
             <Box sx={{ fontFamily: FONTS.doHyeon, fontSize: '15px', color: accent, mb: 0.8 }}>역사와 배경</Box>
             <Box sx={{ fontFamily: FONTS.pretendard, fontSize: '14px', lineHeight: 1.8, color: 'rgba(23,23,23,0.8)' }}>
-              {product.history}
+              {detail.description}
             </Box>
           </Box>
 
           <Box sx={{ display: 'flex', gap: 6, mb: 4 }}>
             <Box>
               <Box sx={{ fontFamily: FONTS.doHyeon, fontSize: '15px', color: accent, mb: 0.8 }}>사이즈</Box>
-              <Box sx={{ fontFamily: FONTS.pretendard, fontSize: '14px' }}>{product.sizes.join(' / ')}</Box>
+              <Box sx={{ fontFamily: FONTS.pretendard, fontSize: '14px' }}>{detail.rental.sizes.join(' / ')}</Box>
             </Box>
             <Box>
               <Box sx={{ fontFamily: FONTS.doHyeon, fontSize: '15px', color: accent, mb: 0.8 }}>구성품</Box>
-              <Box sx={{ fontFamily: FONTS.pretendard, fontSize: '14px' }}>{product.composition}</Box>
+              <Box sx={{ fontFamily: FONTS.pretendard, fontSize: '14px' }}>{[detail.inclusions.costume&&'의상',detail.inclusions.wig&&'가발',detail.inclusions.props&&'소품'].filter(Boolean).join(' · ')}</Box>
             </Box>
           </Box>
 
@@ -177,6 +181,12 @@ function ProductDetailPage() {
             </Box>
           </Box>
         </Box>
+      </Box>
+
+      <Box sx={{ width:'90%',maxWidth:1200,mx:'auto',pb:8,display:'grid',gap:3 }}>
+        <Box sx={{p:{xs:3,md:5},bgcolor:'#F7F5F0'}}><Box sx={{fontFamily:FONTS.gmarket,fontSize:24,mb:2}}>상품 상세 안내</Box><Box sx={{lineHeight:2}}>{detail.shortDescription}<br/>{detail.description}</Box><Box sx={{display:'grid',gridTemplateColumns:{xs:'1fr',md:'repeat(3,1fr)'},gap:2,mt:3}}>{detail.features.map((feature)=><Box key={feature} sx={{p:2,bgcolor:'#fff',fontWeight:700}}>{feature}</Box>)}</Box></Box>
+        <Box sx={{display:'grid',gridTemplateColumns:{xs:'1fr',md:'1fr 1fr'},gap:3}}><Box sx={{p:3,border:'1px solid #E5E1DA',lineHeight:1.9}}><b>배송·반납</b><p>배송비: {detail.delivery.fee}<br/>도착: {detail.delivery.arrival}<br/>반납: {detail.delivery.returnMethod}<br/>교환: {detail.delivery.exchange}</p></Box><Box sx={{p:3,border:'1px solid #E5E1DA',lineHeight:1.9}}><b>소재·관리</b><p>{detail.care.material}<br/>{detail.care.washing}<br/>{detail.care.caution}</p></Box></Box>
+        <Box><Box sx={{fontFamily:FONTS.gmarket,fontSize:24,mb:2}}>실제 대여 후기</Box><Box sx={{display:'grid',gridTemplateColumns:{xs:'1fr',md:'repeat(3,1fr)'},gap:2}}>{detail.reviews.filter(r=>r.visible).map((review,i)=><Box key={`${review.author}-${i}`} sx={{border:'1px solid #E5E1DA',p:2}}><Box component="img" src={imageUrl(review.image)} alt="후기" sx={{width:'100%',aspectRatio:'4/5',objectFit:'cover',mb:2}}/><Rating value={Number(review.rating)} precision={.5} readOnly/><Box sx={{fontWeight:800,mt:1}}>{review.author}</Box><Box sx={{lineHeight:1.7,mt:1}}>{review.text}</Box></Box>)}</Box></Box>
       </Box>
 
       <Footer />

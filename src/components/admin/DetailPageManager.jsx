@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -6,22 +6,47 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import { nezukoDetailDefaults } from '../../data/nezukoDetailDefaults';
+import { makeProductDetailDefaults } from '../../data/nezukoDetailDefaults';
 import { readDetailPage, resetDetailPage, saveDetailPage } from '../../hooks/useManagedDetailPage';
+import { saveManagedProducts } from '../../hooks/useManagedProducts';
 
 const groupSx = { p:{xs:2,md:3}, border:'1px solid #E7E8EC', borderRadius:3, bgcolor:'#fff' };
 const gridSx = { display:'grid', gridTemplateColumns:{xs:'1fr',md:'1fr 1fr'}, gap:2 };
 const titles = { detail:'상세 설명', worn:'착용 사진', video:'영상', reviews:'후기' };
 
-export default function DetailPageManager({ readOnly=false }) {
-  const [form,setForm] = useState(readDetailPage);
+export default function DetailPageManager({ readOnly=false, managedProducts=[] }) {
+  const [selectedId,setSelectedId] = useState('cosplay-38');
+  const selectedProduct = managedProducts.find((item)=>item.id===selectedId) || managedProducts[0];
+  const fallback = selectedProduct ? makeProductDetailDefaults(selectedProduct) : null;
+  const [form,setForm] = useState(()=>fallback ? readDetailPage(selectedId,fallback) : null);
+  useEffect(()=>{ if(selectedProduct) setForm(readDetailPage(selectedId,makeProductDetailDefaults(selectedProduct))); },[selectedId,selectedProduct]);
+  if (!form || !selectedProduct) return <Box sx={{p:3}}>관리할 상품이 없습니다.</Box>;
   const set = (key,value) => setForm((p)=>({ ...p,[key]:value }));
   const nested = (group,key,value) => setForm((p)=>({ ...p,[group]:{...p[group],[key]:value} }));
-  const save = () => { saveDetailPage(form); window.alert('저장했습니다. 실제 상세페이지에 바로 반영됩니다.'); };
-  const reset = () => { resetDetailPage(); setForm(nezukoDetailDefaults); };
+  const save = async () => {
+    saveDetailPage(selectedId, form);
+    const changed = selectedProduct;
+    if (changed) {
+      const synced = {
+        ...changed,
+        name: form.productName,
+        category: form.category,
+        price: Number(form.price) || 0,
+        thumbnail: form.images.thumbnail || form.images.main,
+        images: [form.images.main, form.images.worn].filter(Boolean),
+        shortDesc: form.shortDescription,
+        description: form.description,
+        sizes: form.rental.sizes,
+      };
+      await saveManagedProducts(managedProducts.map((item)=>item.id===selectedId?synced:item), synced);
+    }
+    window.alert('저장했습니다. 메인 상품과 상세페이지에 모두 반영됩니다.');
+  };
+  const reset = () => { resetDetailPage(selectedId); setForm(makeProductDetailDefaults(selectedProduct)); };
   const updateReview = (i,key,value) => setForm((p)=>({ ...p,reviews:p.reviews.map((r,n)=>n===i?{...r,[key]:value}:r) }));
   return <Box sx={{p:{xs:2,md:3}, bgcolor:'#F8F8FA'}}>
-    <Box sx={{display:'flex',flexWrap:'wrap',justifyContent:'space-between',gap:2,mb:3}}><Box><Box sx={{fontSize:24,fontWeight:900}}>네즈코 상세페이지 관리</Box><Box sx={{color:'#737780',mt:.5}}>수정한 내용은 같은 브라우저의 상품 상세페이지에 즉시 반영됩니다.</Box></Box><Box sx={{display:'flex',gap:1}}><Button variant="outlined" onClick={()=>window.open(`${import.meta.env.BASE_URL}#/product/cosplay-38`,'_blank')}>미리보기</Button>{!readOnly&&<><Button variant="outlined" color="inherit" onClick={reset}>초기화</Button><Button variant="contained" onClick={save} sx={{bgcolor:'#171717'}}>저장하고 반영</Button></>}</Box></Box>
+    <Box sx={{display:'flex',flexWrap:'wrap',justifyContent:'space-between',gap:2,mb:3}}><Box><Box sx={{fontSize:24,fontWeight:900}}>전체 상품 상세페이지 관리</Box><Box sx={{color:'#737780',mt:.5}}>상품을 선택해 수정하면 메인 카드와 해당 상세페이지에 동시에 반영됩니다.</Box></Box><Box sx={{display:'flex',gap:1}}><Button variant="outlined" onClick={()=>window.open(`${import.meta.env.BASE_URL}#/product/${encodeURIComponent(selectedId)}`,'_blank')}>미리보기</Button>{!readOnly&&<><Button variant="outlined" color="inherit" onClick={reset}>초기화</Button><Button variant="contained" onClick={save} sx={{bgcolor:'#171717'}}>저장하고 반영</Button></>}</Box></Box>
+    <Paper elevation={0} sx={{...groupSx,mb:2.5}}><TextField select fullWidth label="관리할 상품 선택" value={selectedId} onChange={e=>setSelectedId(e.target.value)}>{managedProducts.map(product=><MenuItem key={product.id} value={product.id}>{product.name} · {product.category}</MenuItem>)}</TextField></Paper>
     <Box sx={{display:'grid',gap:2.5}}>
       <Paper elevation={0} sx={groupSx}><h3>기본 정보</h3><Box sx={gridSx}><TextField label="상품명" value={form.productName} onChange={e=>set('productName',e.target.value)}/><TextField label="카테고리" value={form.category} onChange={e=>set('category',e.target.value)}/><TextField type="number" label="가격" value={form.price} onChange={e=>set('price',Number(e.target.value))}/><TextField type="number" label="할인율 (%)" value={form.discountRate} onChange={e=>set('discountRate',Number(e.target.value))}/><TextField select label="재고 상태" value={form.stockStatus} onChange={e=>set('stockStatus',e.target.value)}>{['판매 중','재고 부족','품절'].map(x=><MenuItem key={x} value={x}>{x}</MenuItem>)}</TextField></Box></Paper>
       <Paper elevation={0} sx={groupSx}><h3>이미지 관리</h3><Box sx={gridSx}>{[['main','대표 이미지'],['thumbnail','썸네일'],['worn','착용 사진'],['accessories','구성품·악세사리 사진']].map(([k,l])=><TextField key={k} label={l} value={form.images[k]} onChange={e=>nested('images',k,e.target.value)} helperText="/img/... 경로 또는 https:// 주소"/>)}</Box></Paper>

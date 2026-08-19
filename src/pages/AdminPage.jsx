@@ -29,6 +29,8 @@ import { stageProducts } from '../data/stageProducts';
 import { FONTS } from '../theme/tokens';
 import useManagedProducts, { deleteManagedProduct, saveManagedProducts, resetManagedProducts } from '../hooks/useManagedProducts';
 import DetailPageManager from '../components/admin/DetailPageManager';
+import { readDetailPage, saveDetailPage } from '../hooks/useManagedDetailPage';
+import { makeProductDetailDefaults } from '../data/nezukoDetailDefaults';
 
 const allProducts = [...hanbokProducts, ...worldProducts, ...cosplayProducts, ...stageProducts];
 const initialOrders = [
@@ -80,6 +82,24 @@ function AdminPage({ readOnly = false }) {
     delete product.wornImageUrl;
     try {
       await saveManagedProducts(editing ? managedProducts.map((item) => item.id === editing ? product : item) : [product, ...managedProducts], product);
+      {
+        const detail = readDetailPage(product.id, makeProductDetailDefaults(product));
+        saveDetailPage(product.id, {
+          ...detail,
+          productName: product.name,
+          category: product.category,
+          price: Number(product.price) || 0,
+          shortDescription: product.shortDesc || product.description || detail.shortDescription,
+          description: product.description || detail.description,
+          images: {
+            ...detail.images,
+            main: product.thumbnail || detail.images.main,
+            thumbnail: product.thumbnail || detail.images.thumbnail,
+            worn: product.images?.[1] || detail.images.worn,
+          },
+          rental: { ...detail.rental, sizes: product.sizes || detail.rental.sizes },
+        });
+      }
       setForm(null);
     } catch {
       window.alert('저장하지 못했습니다. 관리자 권한과 Supabase 연결을 확인해주세요.');
@@ -121,7 +141,7 @@ function AdminPage({ readOnly = false }) {
             <Box sx={{ overflowX: 'auto' }}><Box component="table" sx={{ width: '100%', minWidth: 720, borderCollapse: 'collapse', '& th': { textAlign: 'left', color: '#7B7E86', fontSize: 12, py: 1.5, borderBottom: '1px solid #ECEDEF' }, '& td': { py: 1.4, borderBottom: '1px solid #F0F1F3', fontSize: 13 } }}><thead><tr><th>상품</th><th>카테고리</th><th>대여가</th><th>별점</th><th>상태</th>{!readOnly && <th>관리</th>}</tr></thead><tbody>{products.map((p) => <tr key={p.id}><td><Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 700 }}><Box component="img" src={p.thumbnail} alt="" sx={{ width: 44, height: 56, objectFit: 'cover', borderRadius: 1, bgcolor: '#f3f3f3' }} />{p.name}</Box></td><td>{p.category}</td><td>{p.price?.toLocaleString()}원</td><td>★ {p.rating}</td><td><Chip size="small" label="판매 중" color="success" variant="outlined" /></td>{!readOnly && <td><Button size="small" onClick={() => openProductForm(p)}>수정</Button><Button size="small" color="error" onClick={() => deleteProduct(p.id)}>삭제</Button></td>}</tr>)}</tbody></Box></Box>
           </Box>}
 
-          {tab === 'detail' && <DetailPageManager readOnly={readOnly} />}
+          {tab === 'detail' && <DetailPageManager readOnly={readOnly} managedProducts={managedProducts} />}
 
           {tab === 'schedule' && <Box sx={{ p: { xs: 2, md: 3 }, overflowX: 'auto' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}><Box sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: 20, fontWeight: 900 }}><CalendarMonthOutlinedIcon /> 2026년 8월</Box><Box sx={{ display: 'flex', gap: 1 }}><Chip size="small" label="대여" sx={{ color: '#7C4DFF' }} /><Chip size="small" label="반납" sx={{ color: '#E8A527' }} /></Box></Box>

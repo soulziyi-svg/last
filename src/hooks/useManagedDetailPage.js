@@ -1,13 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { nezukoDetailDefaults } from '../data/nezukoDetailDefaults';
 
-const KEY = 'ibubom-nezuko-detail-v1';
+const KEY = 'ibubom-detail-pages-v2';
+const LEGACY_KEY = 'ibubom-nezuko-detail-v1';
 const EVENT = 'ibubom-detail-changed';
-export const readDetailPage = () => { try { return { ...nezukoDetailDefaults, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch { return nezukoDetailDefaults; } };
-export const saveDetailPage = (value) => { localStorage.setItem(KEY, JSON.stringify(value)); window.dispatchEvent(new Event(EVENT)); };
-export const resetDetailPage = () => { localStorage.removeItem(KEY); window.dispatchEvent(new Event(EVENT)); };
-export default function useManagedDetailPage() {
-  const [value, setValue] = useState(readDetailPage);
-  useEffect(() => { const update = () => setValue(readDetailPage()); window.addEventListener(EVENT, update); window.addEventListener('storage', update); return () => { window.removeEventListener(EVENT, update); window.removeEventListener('storage', update); }; }, []);
+const readAll = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+export const readDetailPage = (productId='cosplay-38', fallback=nezukoDetailDefaults) => {
+  const saved = readAll()[productId] || (productId === 'cosplay-38' ? (()=>{ try{return JSON.parse(localStorage.getItem(LEGACY_KEY)||'null');}catch{return null;} })() : null);
+  return { ...fallback, ...(saved || {}), images:{...fallback.images,...(saved?.images||{})}, rental:{...fallback.rental,...(saved?.rental||{})} };
+};
+export const saveDetailPage = (productId, value) => {
+  const id = typeof productId === 'string' ? productId : 'cosplay-38';
+  const data = typeof productId === 'string' ? value : productId;
+  localStorage.setItem(KEY, JSON.stringify({ ...readAll(), [id]:data }));
+  window.dispatchEvent(new Event(EVENT));
+};
+export const resetDetailPage = (productId='cosplay-38') => { const all=readAll(); delete all[productId]; localStorage.setItem(KEY,JSON.stringify(all)); window.dispatchEvent(new Event(EVENT)); };
+export default function useManagedDetailPage(productId='cosplay-38', fallback=nezukoDetailDefaults) {
+  const fallbackRef=useRef(fallback);
+  fallbackRef.current=fallback;
+  const [value,setValue]=useState(()=>readDetailPage(productId,fallback));
+  useEffect(()=>{ const update=()=>setValue(readDetailPage(productId,fallbackRef.current)); update(); window.addEventListener(EVENT,update); window.addEventListener('storage',update); return()=>{window.removeEventListener(EVENT,update);window.removeEventListener('storage',update);}; },[productId]);
   return value;
 }

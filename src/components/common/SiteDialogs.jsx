@@ -27,7 +27,7 @@ import useManagedProducts from '../../hooks/useManagedProducts';
 import { asset } from '../../utils/asset';
 
 const ALL_PRODUCTS = [...hanbokProducts, ...worldProducts, ...cosplayProducts, ...stageProducts];
-const periods = { '1일': 1, '1박 2일': 1.3, '2박 3일': 1.55 };
+const periods = { '1박': 1, '1박 2일': 1.3, '2박 3일': 1.6 };
 const panelSx = { '& .MuiPaper-root': { bgcolor: '#FFFDF8', backgroundImage: 'none' } };
 const CHATBOT_IMAGE = asset('/img/chatbot.png');
 
@@ -67,11 +67,25 @@ function AccountDialog() {
 function CartDialog() {
   const { dialog, setDialog, cart, updateCart, removeFromCart, setToast } = useStore();
   const managedProducts = useManagedProducts(ALL_PRODUCTS);
-  const currentCart = cart.map((item) => ({ ...item, ...(managedProducts.find((product) => product.id === item.id) || {}) }));
-  const total = currentCart.reduce((sum, p) => sum + Math.round(p.price * (periods[p.period] || 1)) * p.qty, 0);
+  const currentCart = cart.map((item) => ({ ...(managedProducts.find((product) => product.id === item.id) || {}), ...item }));
+  const extraFee = (p, name) => {
+    if (p.extraFees?.[name] != null) return Number(p.extraFees[name]);
+    const rate = { '악세사리': .1, '가발': .2, '소품': .15 }[name] || 0;
+    return Math.round((Number(p.basePrice) || Number(p.price) || 0) * rate / 100) * 100;
+  };
+  const itemTotal = (p) => {
+    if (p.id === 'cosplay-38') {
+      const base = Number(p.basePrice) || Number(p.price) || 0;
+      const rental = Math.round(base * (periods[p.period] || 1) / 100) * 100;
+      const extras = (p.selectedExtras || []).reduce((sum, name) => sum + extraFee(p, name), 0);
+      return (rental + extras) * (p.qty || 1);
+    }
+    return Math.round(p.price * (periods[p.period] || 1)) * (p.qty || 1);
+  };
+  const total = currentCart.reduce((sum, p) => sum + itemTotal(p), 0);
   return <Dialog open={dialog === 'cart'} onClose={() => setDialog(null)} fullWidth maxWidth="md" sx={panelSx}><DialogTitle sx={{ fontFamily: FONTS.gmarket }}>장바구니 <Box component="span" sx={{ color: '#FF5C8A' }}>{cart.length}</Box></DialogTitle><DialogContent>
     {!cart.length && <Box sx={{ py: 8, textAlign: 'center', color: '#777' }}>아직 담은 의상이 없습니다.</Box>}
-    {currentCart.map((p) => <Box key={p.id} sx={{ display: 'grid', gridTemplateColumns: { xs: '90px 1fr', sm: '150px 1fr auto' }, gap: 2, py: 2.5, borderBottom: '1px solid #ddd' }}><Box component="img" src={p.thumbnail} alt="" sx={{ width: '100%', aspectRatio: '4/5', objectFit: 'contain', bgcolor: '#fff' }} /><Box><Box sx={{ fontWeight: 900, fontSize: 18 }}>{p.name}</Box><Box sx={{ my: 1 }}>{['S','M','L'].map((s) => <Button key={s} size="small" variant={p.size === s ? 'contained' : 'outlined'} onClick={() => updateCart(p.id,{ size:s })} sx={{ minWidth: 38, mr:.5, bgcolor: p.size === s ? '#171717' : undefined }}>{s}</Button>)}</Box><Select size="small" value={p.period} onChange={(e) => updateCart(p.id,{ period:e.target.value })}>{Object.keys(periods).map((x) => <MenuItem key={x} value={x}>{x}</MenuItem>)}</Select><Box sx={{ display:'inline-flex', ml:1, alignItems:'center' }}><Button onClick={() => updateCart(p.id,{ qty:Math.max(1,p.qty-1) })}>−</Button>{p.qty}<Button onClick={() => updateCart(p.id,{ qty:p.qty+1 })}>＋</Button></Box></Box><Box sx={{ textAlign:'right' }}><IconButton onClick={() => removeFromCart(p.id)}><DeleteOutlineRoundedIcon /></IconButton><Box sx={{ fontWeight:900, color:'#E23B3B' }}>{(Math.round(p.price*(periods[p.period]||1))*p.qty).toLocaleString()}원</Box></Box></Box>)}
+    {currentCart.map((p) => <Box key={p.id} sx={{ display: 'grid', gridTemplateColumns: { xs: '90px 1fr', sm: '150px 1fr auto' }, gap: 2, py: 2.5, borderBottom: '1px solid #ddd' }}><Box component="img" src={p.thumbnail} alt="" sx={{ width: '100%', aspectRatio: '4/5', objectFit: 'contain', bgcolor: '#fff' }} /><Box><Box sx={{ fontWeight: 900, fontSize: 18 }}>{p.name}</Box><Box sx={{ my: 1 }}>{['S','M','L'].map((s) => <Button key={s} size="small" variant={p.size === s ? 'contained' : 'outlined'} onClick={() => updateCart(p.id,{ size:s })} sx={{ minWidth: 38, mr:.5, bgcolor: p.size === s ? '#171717' : undefined }}>{s}</Button>)}</Box><Select size="small" value={p.period || '1박'} onChange={(e) => updateCart(p.id,{ period:e.target.value })}>{Object.keys(periods).map((x) => <MenuItem key={x} value={x}>{x}</MenuItem>)}</Select><Box sx={{ display:'inline-flex', ml:1, alignItems:'center' }}><Button onClick={() => updateCart(p.id,{ qty:Math.max(1,p.qty-1) })}>−</Button>{p.qty}<Button onClick={() => updateCart(p.id,{ qty:p.qty+1 })}>＋</Button></Box>{p.id==='cosplay-38'&&<Box sx={{mt:1.5,p:1.5,bgcolor:'#F6F1FF',borderRadius:2}}><Box sx={{fontWeight:900,mb:.5}}>추가 대여 옵션</Box>{['악세사리','가발','소품'].map(name=><FormControlLabel key={name} sx={{display:'flex',m:0}} control={<Checkbox checked={(p.selectedExtras||[]).includes(name)} onChange={(e)=>updateCart(p.id,{selectedExtras:e.target.checked?[...(p.selectedExtras||[]),name]:(p.selectedExtras||[]).filter(x=>x!==name)})}/>} label={`${name} +${extraFee(p,name).toLocaleString()}원`}/>)}</Box>}</Box><Box sx={{ textAlign:'right' }}><IconButton onClick={() => removeFromCart(p.id)}><DeleteOutlineRoundedIcon /></IconButton><Box sx={{ fontWeight:900, color:'#E23B3B' }}>{itemTotal(p).toLocaleString()}원</Box></Box></Box>)}
     <Box sx={{ textAlign:'right', pt:3 }}><Box>선택상품 {cart.length}개</Box><Box sx={{ fontSize:28, fontWeight:900, color:'#E23B3B' }}>총 {total.toLocaleString()}원</Box></Box>
   </DialogContent><DialogActions sx={{p:3}}><Button onClick={() => setDialog(null)}>쇼핑 계속하기</Button><Button variant="contained" disabled={!cart.length} onClick={() => setToast('대여 신청이 접수되었습니다.')} sx={{bgcolor:'#171717',px:4}}>선택 상품 대여하기</Button></DialogActions></Dialog>;
 }

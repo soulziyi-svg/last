@@ -32,8 +32,8 @@ export function StoreProvider({ children }) {
 
   const addToCart = (product) => {
     setCart((items) => items.some((item) => item.id === product.id)
-      ? items
-      : [...items, { ...product, qty: 1, size: 'M', period: '1일', accessories: [] }]);
+      ? items.map((item) => item.id === product.id ? { ...item, ...product, qty:product.qty || item.qty || 1, size:product.size || item.size || 'M', period:product.period || item.period || '1박' } : item)
+      : [...items, { qty:1, size:'M', period:'1박', accessories:[], ...product }]);
     setToast('✓ 장바구니에 추가되었습니다.');
   };
   const updateCart = (id, patch) => setCart((items) => items.map((item) => item.id === id ? { ...item, ...patch } : item));

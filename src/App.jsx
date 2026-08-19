@@ -16,10 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
-          <Route
-            path="/admin"
-            element={<AdminPage readOnly={!['127.0.0.1', 'localhost'].includes(window.location.hostname)} />}
-          />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
         <SiteDialogs />
       </HashRouter>

@@ -1,6 +1,6 @@
 export const nezukoDetailDefaults = {
   productName: '네즈코 코스프레 세트', category: '귀멸의 칼날', price: 59000, discountRate: 20, stockStatus: '판매 중',
-  images: { main: '/img/content-cosplay/cosplay-38-product.png', thumbnail: '/img/content-cosplay/nezuko-detail.png', worn: '/img/content-cosplay/cosplay-38-worn.png', accessories: '/img/content-cosplay/nezuko-geta.png', video: '/img/content-cosplay/nezuko-wearing-guide.mp4', videoPoster: '/img/content-cosplay/nezuko-wearing-guide.png' },
+  images: { main: '/img/content-cosplay/cosplay-38-product.png', thumbnail: '/img/content-cosplay/nezuko-accessories.png', worn: '/img/content-cosplay/cosplay-38-worn.png', accessories: '/img/content-cosplay/nezuko-geta.png', video: '/img/content-cosplay/nezuko-wearing-guide.mp4', videoPoster: '/img/content-cosplay/nezuko-wearing-guide.png' },
   shortDescription: '분홍 기하학 무늬 기모노부터 가발과 소품까지 한 번에 준비한 네즈코 코스프레 세트입니다.',
   description: '사진에서 색감과 실루엣이 또렷하게 보이도록 원단과 디테일을 정성스럽게 구성했습니다. 졸업사진, 행사, 촬영 등 특별한 하루를 간편하게 완성해 보세요.',
   features: ['완성도 높은 올인원 세트', '사진에 선명한 색감과 디테일', '움직임을 고려한 편안한 설계'],

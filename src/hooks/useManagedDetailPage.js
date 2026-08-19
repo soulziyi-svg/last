@@ -9,7 +9,7 @@ export const readDetailPage = (productId='cosplay-38', fallback=nezukoDetailDefa
   const saved = readAll()[productId] || (productId === 'cosplay-38' ? (()=>{ try{return JSON.parse(localStorage.getItem(LEGACY_KEY)||'null');}catch{return null;} })() : null);
   const merged = { ...fallback, ...(saved || {}), images:{...fallback.images,...(saved?.images||{})}, rental:{...fallback.rental,...(saved?.rental||{})} };
   if (productId === 'cosplay-38') {
-    if (!merged.images.thumbnail || merged.images.thumbnail === merged.images.main || merged.images.thumbnail.includes('cosplay-38-product')) merged.images.thumbnail = nezukoDetailDefaults.images.thumbnail;
+    if (!merged.images.thumbnail || merged.images.thumbnail === merged.images.main || merged.images.thumbnail.includes('cosplay-38-product') || merged.images.thumbnail.includes('nezuko-detail')) merged.images.thumbnail = nezukoDetailDefaults.images.thumbnail;
     if (!merged.images.accessories || merged.images.accessories.includes('nezuko-accessories')) merged.images.accessories = nezukoDetailDefaults.images.accessories;
     merged.images.video ||= nezukoDetailDefaults.images.video;
     merged.images.videoPoster ||= nezukoDetailDefaults.images.videoPoster;

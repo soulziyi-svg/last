@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>입어봄 IBUBOM - 이벤트 특수의상 대여</title>
+<meta name="description" content="다른 사람이 되어 하루를 빌린다. 한복, 각 나라 전통의상, 코스프레, 공연의상 대여 플랫폼 입어봄 IBUBOM" />
+
+<!-- 폰트 CDN (콘텐츠별 상이한 폰트 적용, 실패 시 sans-serif로 자연스럽게 폴백) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/GmarketSans/GmarketSans.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/Paperlogy.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/LOTTERIACHAB/LOTTERIACHAB.css" />
+
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ================= 탑배너 ================= -->
+<div class="top-banner" id="topBanner" aria-hidden="true">
+  <div class="top-banner-track">
+    <span class="top-banner-item">오늘 주문시 오늘 도착</span>
+    <span class="top-banner-item">100% 세탁 및 고온살균 처리</span>
+    <span class="top-banner-item">간편하게 수거 문앞에 두면 끝</span>
+    <span class="top-banner-item">단체 주문 추가할인</span>
+    <span class="top-banner-item">방송국 대여와 영화촬영 다수 대여경험으로 컨셉추천</span>
+    <span class="top-banner-item">오늘 주문시 오늘 도착</span>
+    <span class="top-banner-item">100% 세탁 및 고온살균 처리</span>
+    <span class="top-banner-item">간편하게 수거 문앞에 두면 끝</span>
+    <span class="top-banner-item">단체 주문 추가할인</span>
+    <span class="top-banner-item">방송국 대여와 영화촬영 다수 대여경험으로 컨셉추천</span>
+  </div>
+</div>
+
+<!-- ================= 헤더 ================= -->
+<header id="siteHeader" class="site-header">
+  <div class="header-inner">
+    <div class="header-left">
+      <a href="admin.html" id="adminBtn" class="admin-btn" hidden>관리자페이지</a>
+      <a href="index.html" class="wordmark">IBUBOM</a>
+    </div>
+
+    <nav class="main-nav" id="mainNav">
+      <button type="button" class="nav-logo-btn" data-cat="hanbok" aria-haspopup="true">
+        <img src="img/콘텐츠1/전통한복/logo02.png" alt="전통한복" />
+      </button>
+      <button type="button" class="nav-logo-btn" data-cat="world" aria-haspopup="true">
+        <img src="img/콘텐츠1/전통한복/logo03.png" alt="각 나라 전통의상" />
+      </button>
+      <button type="button" class="nav-logo-btn" data-cat="cosplay" aria-haspopup="true">
+        <img src="img/콘텐츠1/전통한복/logo04.png" alt="코스프레" />
+      </button>
+      <button type="button" class="nav-logo-btn" data-cat="stage" aria-haspopup="true">
+        <img src="img/콘텐츠1/전통한복/logo05.png" alt="공연의상" />
+      </button>
+
+      <div class="mega-menu" id="megaMenu"></div>
+    </nav>
+
+    <div class="header-right">
+      <button type="button" class="icon-btn" id="searchIconBtn" aria-label="검색">
+        <svg viewBox="0 0 24 24" width="24" height="24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+
+      <button type="button" class="signup-btn" id="signupOpenBtn">회원가입</button>
+
+      <div class="login-slot" id="loginSlot">
+        <span class="welcome-text" id="welcomeText" hidden></span>
+        <button type="button" class="login-btn" id="loginOpenBtn">
+          <span class="login-btn-face front">로그인</span>
+          <span class="login-btn-face back">SIGN IN</span>
+        </button>
+      </div>
+
+      <button type="button" class="icon-btn cart-btn" id="cartIconBtn" aria-label="장바구니">
+        <svg viewBox="0 0 24 24" width="26" height="26"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h7.2a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9" cy="21" r="1.4" fill="currentColor"/><circle cx="17" cy="21" r="1.4" fill="currentColor"/></svg>
+        <span class="cart-count" id="cartCount" hidden>0</span>
+      </button>
+
+      <button type="button" class="icon-btn" id="trackingIconBtn" aria-label="배송조회">
+        <svg viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="2" d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7.5" cy="18.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="18.5" r="1.6" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ================= 메인페이지 ================= -->
+<section id="mainPage" class="main-page">
+  <div class="banner-slider" id="bannerSlider">
+    <button class="banner-nav prev" id="bannerPrev" aria-label="이전 배너">&#10094;</button>
+    <div class="banner-track" id="bannerTrack"></div>
+    <button class="banner-nav next" id="bannerNext" aria-label="다음 배너">&#10095;</button>
+    <div class="banner-dots" id="bannerDots"></div>
+  </div>
+
+  <h2 class="main-tagline">하루를 빌리고, 추억은 가져가세요</h2>
+
+  <div class="timeline-wrap">
+    <img src="img/time.png" alt="이용 순서" class="timeline-img" />
+    <div class="timeline-labels">
+      <div class="timeline-step"><b>01</b><span>의상 선택</span></div>
+      <div class="timeline-step"><b>02</b><span>사이즈 / 날짜 선택</span></div>
+      <div class="timeline-step"><b>03</b><span>배송받기</span></div>
+      <div class="timeline-step"><b>04</b><span>신나게 입기</span></div>
+      <div class="timeline-step"><b>05</b><span>문앞에 두면 반납완료</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 콘텐츠1~4 : JS 렌더링 ================= -->
+<section id="content-hanbok" class="content-section" data-cat="hanbok"></section>
+<section id="content-world" class="content-section" data-cat="world"></section>
+<section id="content-cosplay" class="content-section" data-cat="cosplay"></section>
+<section id="content-stage" class="content-section" data-cat="stage"></section>
+</main>
+
+<!-- ================= 푸터 ================= -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-brand">입어봄 / IBUBOM COSTUME RENTAL<br />오늘 만큼은, 뭐든 되어봄.</p>
+
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>SHOP</h4>
+        <a href="#content-hanbok" class="fline pink">전통의상</a>
+        <a href="#content-world" class="fline yellow">각 나라의 전통의상</a>
+        <a href="#content-cosplay" class="fline purple">코스프레</a>
+        <a href="#content-stage" class="fline mint">무대의상</a>
+      </div>
+      <div class="footer-col">
+        <h4>GUIDE</h4>
+        <a href="#">이용안내</a>
+        <a href="#">대여방법</a>
+        <a href="#">사이즈 가이드</a>
+        <a href="#">배송, 반납</a>
+        <a href="#">교환, 환불</a>
+      </div>
+      <div class="footer-col">
+        <h4>CUSTOMER</h4>
+        <a href="#">공지사항</a>
+        <a href="#">FAQ</a>
+        <a href="#">1:1문의</a>
+        <a href="#">단체대여 문의</a>
+      </div>
+    </div>
+
+    <div class="footer-company">
+      <h4>COMPANY</h4>
+      <p>상호명 : 입어봄 IBUBOM</p>
+      <p>대표자 : 장철희</p>
+      <p>사업자등록번호 : 000-00-00000</p>
+      <p>주소 : 서울시 영등포구 영등포동</p>
+      <p class="footer-tel">02-000-0000</p>
+      <p>E-mail : welcome@ibubom.com</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= 토스트 ================= -->
+<div class="toast" id="toast"></div>
+
+<!-- ================= 검색 모달 ================= -->
+<div class="modal-overlay" id="searchModal" hidden>
+  <div class="modal search-modal">
+    <button class="modal-close" data-close="searchModal">&times;</button>
+    <input type="text" class="search-input" id="searchInput" placeholder="상품명, 카테고리를 검색해보세요" />
+    <div class="search-cats" id="searchCats"></div>
+    <div class="search-body" id="searchBody"></div>
+  </div>
+</div>
+
+<!-- ================= 회원가입 모달 ================= -->
+<div class="modal-overlay" id="signupModal" hidden>
+  <div class="modal signup-modal">
+    <button class="modal-close" data-close="signupModal">&times;</button>
+
+    <div class="signup-step" id="signupStep1">
+      <h3>이용약관에 동의해주세요.</h3>
+      <label class="agree-row all"><input type="checkbox" id="agreeAll" /> 전체동의</label>
+      <label class="agree-row"><input type="checkbox" class="agree-item" data-required="true" /> 서비스 통합이용약관 동의 <b class="req">(필수)</b></label>
+      <label class="agree-row"><input type="checkbox" class="agree-item" /> 위치정보 수집 및 이용 동의</label>
+      <button type="button" class="primary-btn" id="toSignupStep2" disabled>동의하고 가입하기</button>
+    </div>
+
+    <div class="signup-step" id="signupStep2" hidden>
+      <h3>회원정보 입력</h3>
+      <label>아이디(이메일)<input type="email" id="suEmail" placeholder="example@ibubom.com" /></label>
+      <label>비밀번호<input type="password" id="suPw" placeholder="비밀번호" /></label>
+      <label>비밀번호 확인<input type="password" id="suPw2" placeholder="비밀번호 확인" /></label>
+      <label>기본주소<input type="text" id="suAddr" placeholder="주소를 입력해주세요" /></label>
+      <button type="button" class="primary-btn" id="submitSignup">본인인증하고 가입완료하기</button>
+    </div>
+
+    <div class="signup-step" id="signupStep3" hidden>
+      <h3>가입이 완료되었습니다!</h3>
+      <p>입어봄과 함께 오늘, 뭐든 되어보세요.</p>
+      <button type="button" class="primary-btn" data-close="signupModal">시작하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 로그인 모달 ================= -->
+<div class="modal-overlay" id="loginModal" hidden>
+  <div class="modal login-modal">
+    <button class="modal-close" data-close="loginModal">&times;</button>
+    <h3>SIGN IN</h3>
+    <label>아이디<input type="email" id="liEmail" placeholder="이메일" /></label>
+    <label>비밀번호<input type="password" id="liPw" placeholder="비밀번호" /></label>
+    <button type="button" class="primary-btn" id="submitLogin">로그인하기</button>
+    <div class="login-links">
+      <button type="button" data-switch="signupModal">회원가입</button>
+      <button type="button" id="findAccountBtn">아이디/비밀번호 찾기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 장바구니 모달 ================= -->
+<div class="modal-overlay" id="cartModal" hidden>
+  <div class="modal cart-modal">
+    <div class="cart-head">
+      <div>
+        <h3>장바구니</h3>
+        <p>특별한 하루를 위한 의상을 확인해보세요.</p>
+      </div>
+      <button class="modal-close" data-close="cartModal">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-summary" id="cartSummary"></div>
+  </div>
+</div>
+
+<!-- ================= 배송조회 모달 ================= -->
+<div class="modal-overlay" id="trackingModal" hidden>
+  <div class="modal tracking-modal side-right">
+    <button class="modal-close" data-close="trackingModal">&times;</button>
+    <h3>배송조회</h3>
+    <div id="trackingBody"></div>
+  </div>
+</div>
+
+<!-- ================= 챗봇 ================= -->
+<button type="button" class="fab chatbot-fab" id="chatbotFab" aria-label="챗봇 상담">
+  <img src="img/chatbot.png" alt="챗봇" />
+</button>
+<div class="modal-overlay side" id="chatbotModal" hidden>
+  <div class="modal chatbot-modal side-right">
+    <div class="chatbot-head">
+      <span>입어봄 AI 상담원</span>
+      <button class="modal-close" data-close="chatbotModal">&times;</button>
+    </div>
+    <div class="chatbot-keywords" id="chatbotKeywords"></div>
+    <div class="chatbot-messages" id="chatbotMessages"></div>
+    <div class="chatbot-input-row">
+      <textarea id="chatbotInput" placeholder="궁금한 점을 입력해주세요 (Enter 전송 / Shift+Enter 줄바꿈)" rows="1"></textarea>
+      <button type="button" id="chatbotSend">전송</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 상담하기 ================= -->
+<button type="button" class="fab consult-fab" id="consultFab" aria-label="상담하기">
+  <img src="img/상담하기.png" alt="상담하기" />
+</button>
+<div class="modal-overlay side" id="consultModal" hidden>
+  <div class="modal consult-modal side-right">
+    <button class="modal-close" data-close="consultModal">&times;</button>
+    <div class="consult-progress" id="consultProgress"></div>
+    <div class="consult-body" id="consultBody"></div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

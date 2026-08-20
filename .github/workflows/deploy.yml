@@ -1,0 +1,37 @@
+name: Deploy to GitHub Pages
+
+# 수동 실행 전용: Actions 탭 > Deploy to GitHub Pages > Run workflow 를 눌러야 배포됩니다.
+# main 브랜치에 push 하는 것만으로는 자동 배포되지 않습니다 (확인 후 수동 배포를 위함).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

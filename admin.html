@@ -3,21 +3,100 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>입어봄 관리자페이지 (준비중)</title>
-<style>
-  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-    font-family:'Pretendard',sans-serif;background:#171717;color:#FFFDF8;text-align:center;}
-  .box{padding:40px;}
-  h1{font-size:22px;margin-bottom:12px;}
-  p{color:#bbb;font-size:14px;line-height:1.7;}
-  a{display:inline-block;margin-top:24px;color:#7C4DFF;font-weight:700;}
-</style>
+<title>입어봄 관리자페이지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/GmarketSans/GmarketSans.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/admin.css" />
 </head>
-<body>
-  <div class="box">
-    <h1>관리자페이지는 다음 단계에서 구현됩니다</h1>
-    <p>대시보드 · 상품관리 · 예약달력 · 재고관리 · 주문관리 · 후기관리가<br/>이 페이지에 순차적으로 추가될 예정입니다.</p>
-    <a href="index.html">← 사이트로 돌아가기</a>
+<body class="admin-body">
+
+<div class="admin-shell">
+  <aside class="admin-side">
+    <a href="index.html" class="admin-logo">IBUBOM<span>관리자</span></a>
+    <nav class="admin-gnb" id="adminGnb">
+      <button type="button" class="admin-gnb-btn active" data-page="dashboard">대시보드</button>
+      <button type="button" class="admin-gnb-btn" data-page="mainpage">메인페이지 관리</button>
+      <button type="button" class="admin-gnb-btn" data-page="products">상품관리</button>
+      <button type="button" class="admin-gnb-btn" data-page="calendar">예약달력</button>
+      <button type="button" class="admin-gnb-btn" data-page="stock">재고·사이즈</button>
+      <button type="button" class="admin-gnb-btn" data-page="orders">주문관리</button>
+      <button type="button" class="admin-gnb-btn" data-page="reviews">후기관리</button>
+      <button type="button" class="admin-gnb-btn" data-page="settings">챗봇/API 설정</button>
+    </nav>
+    <a href="index.html" class="admin-exit">← 사이트로 돌아가기</a>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-guard" id="adminGuard">
+      <div class="admin-guard-box">
+        <h2>관리자 전용 페이지입니다</h2>
+        <p>heechic@naver.com 계정으로 로그인해야 이용할 수 있어요.<br/>지금은 데모 확인을 위해 아래 버튼으로 관리자로 로그인할 수 있습니다.</p>
+        <button type="button" class="primary-btn" id="devAdminLogin" style="width:auto;padding:14px 26px;">heechic@naver.com 으로 로그인하고 입장</button>
+      </div>
+    </div>
+
+    <div id="adminContent" hidden>
+      <header class="admin-topbar">
+        <h1 id="pageTitle">대시보드</h1>
+        <div class="admin-topbar-right">
+          <span id="adminWho"></span>
+          <button type="button" id="adminLogout">로그아웃</button>
+        </div>
+      </header>
+      <div id="pageBody" class="admin-page-body"></div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 상품 편집 모달 -->
+<div class="modal-overlay" id="productEditModal" hidden>
+  <div class="modal admin-product-modal">
+    <button class="modal-close" data-close="productEditModal">&times;</button>
+    <h3 id="productEditTitle">상품 수정</h3>
+    <div class="admin-edit-grid">
+      <label>카테고리
+        <select id="peCat">
+          <option value="hanbok">전통한복</option>
+          <option value="world">각 나라 전통의상</option>
+          <option value="cosplay">코스프레</option>
+          <option value="stage">공연의상</option>
+        </select>
+      </label>
+      <label>서브카테고리(분류)<input type="text" id="peSub" placeholder="예: 평상복" /></label>
+      <label>상품명<input type="text" id="peName" placeholder="상품명" /></label>
+      <label>대여가격(1일, 원)<input type="number" id="pePrice" placeholder="24000" /></label>
+      <label class="wide">대표 이미지 경로(콤마로 구분, 첫 번째가 대표)
+        <input type="text" id="peImages" placeholder="img/.../상품01.png, img/.../상품02.png" />
+      </label>
+      <label class="wide">착용 이미지 경로<input type="text" id="peWorn" placeholder="img/.../착용컷.png" /></label>
+      <label class="wide">상품 설명(줄바꿈으로 구분)
+        <textarea id="peDesc" rows="3" placeholder="상품 설명 1줄씩 입력"></textarea>
+      </label>
+      <label>S 재고<input type="number" id="peStockS" min="0" /></label>
+      <label>M 재고<input type="number" id="peStockM" min="0" /></label>
+      <label>L 재고<input type="number" id="peStockL" min="0" /></label>
+      <label>공개 상태
+        <select id="peVisible">
+          <option value="visible">공개</option>
+          <option value="hidden">숨김</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="peHot" /> HOT 뱃지 표시</label>
+      <label><input type="checkbox" id="pePopular" /> 인기상품 표시</label>
+    </div>
+    <div class="admin-edit-actions">
+      <a id="pePreviewLink" href="#" target="_blank" class="more-btn">미리보기(상세페이지 열기)</a>
+      <button type="button" class="primary-btn" id="peSave" style="width:auto;">저장하고 반영</button>
+    </div>
   </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/admin.js"></script>
 </body>
 </html>

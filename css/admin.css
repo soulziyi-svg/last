@@ -1,0 +1,113 @@
+/* ==========================================================
+   IBUBOM / 입어봄 - admin.css (관리자페이지)
+   ========================================================== */
+
+.admin-body{ background:#F5F5F2; font-family:var(--font-body); }
+.admin-shell{ display:flex; min-height:100vh; }
+
+.admin-side{
+  width:220px; flex-shrink:0; background:var(--black); color:var(--white);
+  display:flex; flex-direction:column; padding:28px 0; position:sticky; top:0; height:100vh;
+}
+.admin-logo{ font-family:var(--font-friendly); font-weight:800; font-size:20px; padding:0 24px 24px; display:block; color:var(--white); }
+.admin-logo span{ display:block; font-size:12px; color:#999; font-weight:400; margin-top:4px; }
+.admin-gnb{ display:flex; flex-direction:column; flex:1; }
+.admin-gnb-btn{
+  text-align:left; color:#ccc; padding:14px 24px; font-size:14px; font-family:var(--font-friendly);
+  border-left:3px solid transparent;
+}
+.admin-gnb-btn:hover{ color:var(--white); background:#242424; }
+.admin-gnb-btn.active{ color:var(--white); background:#242424; border-left-color:var(--purple); font-weight:700; }
+.admin-exit{ padding:14px 24px; font-size:13px; color:#999; }
+.admin-exit:hover{ color:var(--white); }
+
+.admin-main{ flex:1; min-width:0; }
+.admin-guard{ display:flex; align-items:center; justify-content:center; min-height:100vh; }
+.admin-guard-box{ text-align:center; max-width:420px; padding:40px; }
+.admin-guard-box h2{ font-family:var(--font-friendly); margin-bottom:14px; }
+.admin-guard-box p{ font-size:13px; color:#777; line-height:1.7; margin-bottom:24px; }
+
+.admin-topbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:22px 32px; background:var(--white); border-bottom:1px solid #e5e5e0;
+}
+.admin-topbar h1{ font-family:var(--font-friendly); font-size:20px; margin:0; }
+.admin-topbar-right{ display:flex; align-items:center; gap:16px; font-size:13px; color:#666; }
+.admin-topbar-right button{ border:1px solid #ccc; padding:6px 12px; }
+
+.admin-page-body{ padding:28px 32px 60px; }
+.admin-subtitle{ font-family:var(--font-friendly); font-size:16px; margin:32px 0 14px; }
+.admin-hint{ font-size:12px; color:#999; margin-bottom:16px; line-height:1.6; }
+
+/* 대시보드 타일 */
+.dash-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.dash-tile{
+  background:var(--white); border:1px solid #e5e5e0; padding:22px;
+  display:flex; flex-direction:column; gap:6px;
+}
+.dash-tile span{ font-size:13px; color:#888; }
+.dash-tile b{ font-size:26px; font-weight:800; }
+.dash-tile small{ font-size:11px; color:#aaa; }
+.dash-tile.accent b{ color:var(--pink); }
+.dash-tile.warn b{ color:#E11D2E; }
+
+/* 테이블 공통 */
+.admin-table{ width:100%; border-collapse:collapse; background:var(--white); font-size:13px; }
+.admin-table th,.admin-table td{ border:1px solid #eceae2; padding:10px 12px; text-align:left; }
+.admin-table thead th{ background:#f7f7f2; font-weight:700; }
+.admin-thumb{ width:44px; height:56px; object-fit:cover; }
+.admin-row-actions{ display:flex; gap:6px; }
+.admin-row-actions button{ border:1px solid #ccc; padding:5px 10px; font-size:12px; }
+.admin-row-actions button.danger{ border-color:#E11D2E; color:#E11D2E; }
+.tag-hidden{ font-size:11px; color:#999; border:1px solid #ccc; padding:1px 5px; }
+.status-badge{ padding:3px 8px; font-size:11px; border:1px solid #ccc; }
+.status-badge.s-배송완료{ border-color:#1c9c7c; color:#1c9c7c; }
+.status-badge.s-배송중{ border-color:var(--purple); color:var(--purple); }
+.status-badge.s-배송준비{ border-color:#999; color:#999; }
+
+/* 툴바 / 폼 */
+.admin-toolbar{ display:flex; justify-content:space-between; gap:12px; margin-bottom:16px; }
+.admin-toolbar input,.admin-toolbar select{ padding:10px; border:1px solid #ccc; font-size:13px; min-width:240px; }
+.admin-form-card{ background:var(--white); border:1px solid #e5e5e0; padding:26px; max-width:720px; }
+.admin-field{ display:block; font-size:13px; font-weight:700; margin-bottom:16px; }
+.admin-field input,.admin-field textarea,.admin-field select{
+  display:block; width:100%; margin-top:6px; padding:10px; border:1px solid #ccc; font-size:13px; font-weight:400;
+  font-family:var(--font-body);
+}
+.admin-content-block{ border-top:1px solid #eee; padding-top:14px; margin-top:14px; }
+.admin-content-block h4{ font-family:var(--font-friendly); font-size:14px; margin:0 0 10px; }
+
+/* 예약달력 */
+.cal-weekdays{ display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:12px; color:#888; margin-bottom:6px; }
+.cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:20px; }
+.cal-cell{ background:var(--white); border:1px solid #eceae2; min-height:82px; padding:8px; font-size:11px; }
+.cal-cell.empty{ background:transparent; border:none; }
+.cal-cell.today{ outline:2px solid var(--purple); }
+.cal-day{ font-weight:700; margin-bottom:6px; }
+.cal-tag{ padding:2px 6px; margin-bottom:3px; font-size:10px; }
+.cal-tag.ship{ background:#EFE8FF; color:var(--purple); }
+.cal-tag.ret{ background:#FFE9EF; color:var(--pink); }
+
+/* 후기관리 */
+.review-admin-table textarea{ width:180px; font-size:12px; padding:6px; border:1px solid #ccc; }
+.review-text-cell{ max-width:260px; }
+.review-save-btn{ border:1px solid var(--purple); color:var(--purple); padding:6px 10px; font-size:12px; }
+
+/* 상품 편집 모달 */
+.admin-product-modal{ width:640px; max-width:92vw; }
+.admin-product-modal h3{ font-family:var(--font-friendly); margin-bottom:18px; }
+.admin-edit-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
+.admin-edit-grid label{ font-size:12px; font-weight:700; }
+.admin-edit-grid label.wide{ grid-column:1 / -1; }
+.admin-edit-grid input,.admin-edit-grid select,.admin-edit-grid textarea{
+  display:block; width:100%; margin-top:6px; padding:9px; border:1px solid #ccc; font-size:13px; font-weight:400;
+}
+.admin-edit-actions{ display:flex; justify-content:space-between; align-items:center; margin-top:22px; }
+
+@media (max-width:900px){
+  .admin-shell{ flex-direction:column; }
+  .admin-side{ width:100%; height:auto; position:static; flex-direction:row; overflow-x:auto; padding:12px; }
+  .admin-gnb{ flex-direction:row; }
+  .dash-grid{ grid-template-columns:repeat(2,1fr); }
+  .admin-edit-grid{ grid-template-columns:1fr; }
+}

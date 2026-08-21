@@ -1,131 +1,16 @@
 /* ==========================================================
-   IBUBOM / 입어봄 - main.js
+   IBUBOM / 입어봄 - main.js (홈페이지 전용)
+   공용 로직(인증/장바구니/검색/배송조회 등)은 js/common.js 참고
    ========================================================== */
 "use strict";
 
-/* ---------------- 공용 유틸 ---------------- */
-function won(n){ return n.toLocaleString("ko-KR") + "원"; }
-function $(sel, root){ return (root||document).querySelector(sel); }
-function $all(sel, root){ return Array.from((root||document).querySelectorAll(sel)); }
-
-function showToast(msg){
-  const t = $("#toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(()=>t.classList.remove("show"), 2200);
-}
-
-function openModal(id){ const m=$("#"+id); if(m){ m.hidden=false; } }
-function closeModal(id){ const m=$("#"+id); if(m){ m.hidden=true; } }
-
-document.addEventListener("click", (e)=>{
-  const closeEl = e.target.closest("[data-close]");
-  if(closeEl){ closeModal(closeEl.dataset.close); }
-  const switchEl = e.target.closest("[data-switch]");
-  if(switchEl){
-    const overlay = switchEl.closest(".modal-overlay");
-    if(overlay) overlay.hidden = true;
-    openModal(switchEl.dataset.switch);
-  }
-  if(e.target.classList && e.target.classList.contains("modal-overlay") && !e.target.classList.contains("side")){
-    e.target.hidden = true;
-  }
-});
-
-/* ---------------- 헤더 스크롤 축소 ---------------- */
-const header = $("#siteHeader");
-window.addEventListener("scroll", ()=>{
-  header.classList.toggle("scrolled", window.scrollY > 40);
-}, { passive:true });
-
-/* ---------------- 로그인 / 회원 상태 ---------------- */
-const AUTH_KEY = "ibubom_auth";
-function getAuth(){ try{ return JSON.parse(localStorage.getItem(AUTH_KEY)); }catch(e){ return null; } }
-function setAuth(v){ localStorage.setItem(AUTH_KEY, JSON.stringify(v)); }
-function clearAuth(){ localStorage.removeItem(AUTH_KEY); }
-
-function applyAuthUI(){
-  const auth = getAuth();
-  const welcomeText = $("#welcomeText");
-  const loginBtn = $("#loginOpenBtn");
-  const adminBtn = $("#adminBtn");
-  if(auth && auth.email){
-    welcomeText.hidden = false;
-    welcomeText.textContent = `${auth.email.split("@")[0]}님 반갑습니다.`;
-    loginBtn.classList.add("logged");
-    loginBtn.querySelector(".front").textContent = "로그아웃";
-    loginBtn.querySelector(".back").textContent = "LOG OUT";
-    adminBtn.hidden = auth.email.toLowerCase() !== "heechic@naver.com";
-  }else{
-    welcomeText.hidden = true;
-    loginBtn.classList.remove("logged");
-    loginBtn.querySelector(".front").textContent = "로그인";
-    loginBtn.querySelector(".back").textContent = "SIGN IN";
-    adminBtn.hidden = true;
-  }
-}
-
-$("#loginOpenBtn").addEventListener("click", ()=>{
-  const auth = getAuth();
-  if(auth && auth.email){
-    clearAuth();
-    applyAuthUI();
-    showToast("로그아웃 되었습니다");
-  }else{
-    openModal("loginModal");
-  }
-});
-
-$("#submitLogin").addEventListener("click", ()=>{
-  const email = $("#liEmail").value.trim();
-  const pw = $("#liPw").value.trim();
-  if(!email || !pw){ showToast("이메일과 비밀번호를 입력해주세요"); return; }
-  setAuth({ email });
-  applyAuthUI();
-  closeModal("loginModal");
-  showToast("로그인 되었습니다");
-  $("#liEmail").value = ""; $("#liPw").value = "";
-});
-$("#findAccountBtn").addEventListener("click", ()=> showToast("고객센터 02-000-0000 으로 문의해주세요"));
-
-$("#signupOpenBtn").addEventListener("click", ()=> openModal("signupModal"));
-
-/* 회원가입 STEP1 : 약관 */
-const agreeAll = $("#agreeAll");
-const agreeItems = $all(".agree-item");
-const toStep2Btn = $("#toSignupStep2");
-function syncAgree(){
-  const allChecked = agreeItems.every(i=>i.checked);
-  agreeAll.checked = allChecked;
-  toStep2Btn.disabled = !allChecked;
-}
-agreeAll.addEventListener("change", ()=>{
-  agreeItems.forEach(i=> i.checked = agreeAll.checked);
-  syncAgree();
-});
-agreeItems.forEach(i=> i.addEventListener("change", syncAgree));
-toStep2Btn.addEventListener("click", ()=>{
-  $("#signupStep1").hidden = true;
-  $("#signupStep2").hidden = false;
-});
-$("#submitSignup").addEventListener("click", ()=>{
-  const email = $("#suEmail").value.trim();
-  const pw = $("#suPw").value.trim();
-  const pw2 = $("#suPw2").value.trim();
-  if(!email || !pw){ showToast("이메일과 비밀번호를 입력해주세요"); return; }
-  if(pw !== pw2){ showToast("비밀번호가 일치하지 않습니다"); return; }
-  $("#signupStep2").hidden = true;
-  $("#signupStep3").hidden = false;
-});
-
-/* ---------------- 메가메뉴 ---------------- */
+/* ---------------- 메가메뉴 (홈 헤더 전용) ---------------- */
 const megaMenu = $("#megaMenu");
 function buildMegaColumns(cat){
   const meta = CATEGORY_META[cat];
   const cols = meta.order.map(sub=>{
     const items = productsByCatSub(cat, sub);
-    const links = items.map(p=>`<a href="#" data-pid="${p.id}">${p.name}</a>`).join("");
+    const links = items.map(p=>`<a href="product.html?id=${p.id}">${p.name}</a>`).join("");
     return `<div class="mega-col"><h5>${sub}</h5>${links}</div>`;
   }).join("");
   return `<div class="mega-cols">${cols}</div>`;
@@ -147,216 +32,8 @@ $("#mainNav").addEventListener("mouseleave", ()=>{
     $all(".nav-logo-btn").forEach(b=>b.classList.remove("active"));
   }, 150);
 });
-megaMenu.addEventListener("click",(e)=>{
-  const a = e.target.closest("[data-pid]");
-  if(a){ e.preventDefault(); megaMenu.classList.remove("open"); openQuickView(a.dataset.pid); }
-});
 
-/* ---------------- 검색 모달 ---------------- */
-const searchCats = $("#searchCats");
-const searchBody = $("#searchBody");
-Object.values(CATEGORY_META).forEach((meta,i)=>{
-  const b = document.createElement("button");
-  b.textContent = meta.label; b.dataset.cat = meta.key;
-  if(i===0) b.classList.add("active");
-  searchCats.appendChild(b);
-});
-function renderSearchBody(cat, keyword){
-  const meta = CATEGORY_META[cat];
-  keyword = (keyword||"").trim();
-  searchBody.innerHTML = meta.order.map(sub=>{
-    let items = productsByCatSub(cat, sub);
-    if(keyword) items = items.filter(p=>p.name.includes(keyword) || sub.includes(keyword));
-    if(!items.length) return "";
-    return `<div class="search-sub">
-      <div class="search-sub-title" data-sub="${sub}">${sub} ▾</div>
-      <div class="search-sub-list">${items.map(p=>`<a href="#" data-pid="${p.id}">${p.name}</a>`).join("")}</div>
-    </div>`;
-  }).join("");
-}
-searchCats.addEventListener("click",(e)=>{
-  const b = e.target.closest("button"); if(!b) return;
-  $all("button", searchCats).forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  renderSearchBody(b.dataset.cat, $("#searchInput").value);
-});
-$("#searchInput").addEventListener("input", ()=>{
-  const activeCat = $(".search-cats button.active").dataset.cat;
-  renderSearchBody(activeCat, $("#searchInput").value);
-});
-searchBody.addEventListener("click",(e)=>{
-  const title = e.target.closest(".search-sub-title");
-  if(title){ title.nextElementSibling.style.display = title.nextElementSibling.style.display==="none" ? "flex":"none"; }
-  const a = e.target.closest("[data-pid]");
-  if(a){ e.preventDefault(); closeModal("searchModal"); openQuickView(a.dataset.pid); }
-});
-$("#searchIconBtn").addEventListener("click", ()=>{
-  openModal("searchModal");
-  renderSearchBody("hanbok","");
-});
-
-/* ---------------- 장바구니 ---------------- */
-const CART_KEY = "ibubom_cart";
-function getCart(){ try{ return JSON.parse(localStorage.getItem(CART_KEY))||[]; }catch(e){ return []; } }
-function setCart(c){ localStorage.setItem(CART_KEY, JSON.stringify(c)); updateCartBadge(); }
-function updateCartBadge(){
-  const c = getCart();
-  const count = c.reduce((s,i)=>s+i.qty,0);
-  const badge = $("#cartCount");
-  badge.textContent = count;
-  badge.hidden = count===0;
-}
-const PERIOD_RATE = { "1일":1, "1박2일":1.3, "2박3일":1.6 };
-function periodPrice(base, period){ return Math.round(base*PERIOD_RATE[period]/100)*100; }
-
-function addToCart(productId, opts){
-  opts = opts || {};
-  const p = getProduct(productId);
-  const sizes = ["S","M","L"].filter(s=>p.stock[s]>0);
-  const cart = getCart();
-  const item = {
-    cartId: "c"+Date.now()+Math.floor(Math.random()*999),
-    productId,
-    size: opts.size || sizes[0] || "M",
-    accessories: [],
-    period: "1일",
-    qty: 1
-  };
-  cart.push(item);
-  setCart(cart);
-  showToast("✓ 장바구니가 추가되었습니다.");
-}
-
-function cartItemUnit(item){
-  const p = getProduct(item.productId);
-  const base = periodPrice(p.price, item.period);
-  const accTotal = item.accessories.reduce((s,a)=>s+a.price,0);
-  return base + accTotal;
-}
-
-function renderCart(){
-  const cart = getCart();
-  const wrap = $("#cartItems");
-  const summary = $("#cartSummary");
-  if(!cart.length){
-    wrap.innerHTML = `<div class="cart-empty">아직 장바구니가 비어있어요.<br/>오늘은 어떤 모습이 되어볼까요?</div>`;
-    summary.innerHTML = "";
-    return;
-  }
-  wrap.innerHTML = cart.map(item=>{
-    const p = getProduct(item.productId);
-    const unit = cartItemUnit(item) * item.qty;
-    const sizeBtns = ["S","M","L"].map(s=>{
-      const stock = p.stock[s];
-      const soldout = stock<=0;
-      return `<label style="opacity:${soldout?0.4:1}">
-        <input type="radio" name="size-${item.cartId}" value="${s}" ${item.size===s?"checked":""} ${soldout?"disabled":""}/> ${s}${soldout?"(품절)":""}
-      </label>`;
-    }).join("");
-    const accRows = p.accessories.map(a=>{
-      const checked = item.accessories.some(x=>x.name===a.name);
-      return `<label><span><input type="checkbox" data-acc="${a.name}" data-price="${a.price}" ${checked?"checked":""}/> ${a.name}</span><span>+${a.price.toLocaleString()}원</span></label>`;
-    }).join("");
-    const periodRows = ["1일","1박2일","2박3일"].map(per=>{
-      return `<label><input type="radio" name="period-${item.cartId}" value="${per}" ${item.period===per?"checked":""}/> ${per} <span style="color:#888;font-size:11px;">${won(periodPrice(p.price,per))}</span></label>`;
-    }).join("");
-    return `<div class="cart-item" data-cid="${item.cartId}">
-      <img class="cart-item-img" src="${p.images[0]}" alt="${p.name}"/>
-      <div class="cart-item-body">
-        <div class="cart-item-top">
-          <div>
-            <div class="cart-item-name">${p.name}</div>
-            <div style="font-size:12px;color:#888;">${p.sub}</div>
-          </div>
-          <button class="cart-item-remove" data-remove="${item.cartId}">삭제</button>
-        </div>
-        <div class="cart-size-row">${sizeBtns}</div>
-        ${p.accessories.length? `<div class="cart-acc-title">추가 구성 (다중선택)</div><div class="cart-acc-row">${accRows}</div>`:""}
-        <div class="cart-period-title">대여기간</div>
-        <div class="cart-period-row">${periodRows}</div>
-        <div class="cart-qty">
-          수량
-          <button data-qty="-1">−</button>
-          <span>${item.qty}</span>
-          <button data-qty="1">+</button>
-        </div>
-        <div class="cart-item-price">상품금액 ${won(unit)}</div>
-      </div>
-    </div>`;
-  }).join("");
-
-  const productTotal = cart.reduce((s,i)=>{ const p=getProduct(i.productId); return s+periodPrice(p.price,i.period)*i.qty; },0);
-  const accTotal = cart.reduce((s,i)=> s + i.accessories.reduce((a,x)=>a+x.price,0)*i.qty, 0);
-  summary.innerHTML = `
-    <div class="cart-summary-row"><span>선택상품</span><span>${cart.length}개</span></div>
-    <div class="cart-summary-row"><span>상품금액</span><span>${won(productTotal)}</span></div>
-    <div class="cart-summary-row"><span>액세서리</span><span>${won(accTotal)}</span></div>
-    <div class="cart-summary-total"><span>총 결제 예정금액</span><span>${won(productTotal+accTotal)}</span></div>
-    <button class="cart-checkout-btn" id="checkoutBtn">선택 상품 대여하기</button>
-    <a href="#" class="cart-continue" data-close="cartModal">쇼핑 계속하기 →</a>
-  `;
-}
-
-$("#cartItems").addEventListener("click",(e)=>{
-  const cid = e.target.closest("[data-cid]")?.dataset.cid;
-  if(e.target.dataset.remove){
-    setCart(getCart().filter(i=>i.cartId!==e.target.dataset.remove));
-    renderCart(); return;
-  }
-  if(e.target.dataset.qty && cid){
-    const cart = getCart();
-    const item = cart.find(i=>i.cartId===cid);
-    item.qty = Math.max(1, item.qty + Number(e.target.dataset.qty));
-    setCart(cart); renderCart(); return;
-  }
-});
-$("#cartItems").addEventListener("change",(e)=>{
-  const cid = e.target.closest("[data-cid]")?.dataset.cid;
-  if(!cid) return;
-  const cart = getCart();
-  const item = cart.find(i=>i.cartId===cid);
-  const p = getProduct(item.productId);
-  if(e.target.name === `size-${cid}`) item.size = e.target.value;
-  if(e.target.name === `period-${cid}`) item.period = e.target.value;
-  if(e.target.dataset.acc){
-    const name = e.target.dataset.acc, price = Number(e.target.dataset.price);
-    if(e.target.checked) item.accessories.push({name, price});
-    else item.accessories = item.accessories.filter(a=>a.name!==name);
-  }
-  setCart(cart); renderCart();
-});
-$("#cartModal").addEventListener("click",(e)=>{
-  if(e.target.id === "checkoutBtn"){
-    setCart([]);
-    renderCart();
-    closeModal("cartModal");
-    showToast("대여 신청이 접수되었습니다. 감사합니다!");
-  }
-});
-$("#cartIconBtn").addEventListener("click", ()=>{ openModal("cartModal"); renderCart(); });
-
-/* ---------------- 배송조회 모달 ---------------- */
-$("#trackingIconBtn").addEventListener("click", ()=>{
-  $("#trackingBody").innerHTML = `
-    <p class="track-product">달빛 하얀 소복</p>
-    <p class="track-order-no">주문번호 IBUBOM-20260818-001</p>
-    <p class="track-courier">천리마 퀵서비스 / 1234-5678-9012</p>
-    <div class="track-steps">
-      ${["done","done","current","","","",""].map((s,i)=>{
-        const dot = `<div class="track-step-dot ${s?'done':''}"></div>`;
-        const line = i<6 ? `<div class="track-step-line ${i<2?'done':''}"></div>` : "";
-        return dot+line;
-      }).join("")}
-    </div>
-    <div class="track-labels"><span>주문완료</span><span>상품준비중</span><span>배송중</span><span>배송완료</span><span>대여중</span><span>반납배송중</span><span>반납완료</span></div>
-    <div class="track-log">08.18 09:20 &nbsp; 상품 준비중</div>
-    <div class="track-eta">예상 도착일 <b>8월 18일 오후 예정</b></div>
-    <div class="track-return">반납 예정일 2026.08.22</div>
-  `;
-  openModal("trackingModal");
-});
-
-/* ---------------- 배너 슬라이더 (coverflow) ---------------- */
+/* ---------------- 배너 슬라이더 (coverflow + 홍보문구) ---------------- */
 const bannerTrack = $("#bannerTrack");
 const bannerDots = $("#bannerDots");
 let bannerIdx = 0;
@@ -365,6 +42,11 @@ BANNER_IMAGES.forEach((src,i)=>{
   d.className = "banner-slide";
   d.style.backgroundImage = `url('${src}')`;
   d.dataset.i = i;
+  const text = BANNER_TEXTS[i] || {};
+  d.innerHTML = `<div class="banner-copy">
+    <h3>${text.title||""}</h3>
+    <p>${text.desc||""}</p>
+  </div>`;
   bannerTrack.appendChild(d);
   const dot = document.createElement("div");
   dot.className = "banner-dot";
@@ -393,6 +75,11 @@ $("#bannerPrev").addEventListener("click", ()=>{ bannerIdx=(bannerIdx-1+BANNER_I
 $("#bannerNext").addEventListener("click", ()=>{ bannerIdx=(bannerIdx+1)%BANNER_IMAGES.length; renderBanner(); });
 renderBanner();
 setInterval(()=>{ bannerIdx=(bannerIdx+1)%BANNER_IMAGES.length; renderBanner(); }, 5000);
+
+/* ---------------- 메인 태그라인 (관리자 문구 반영) ---------------- */
+const siteTextHome = getSiteText();
+$(".main-tagline").textContent = siteTextHome.mainTagline;
+$(".footer-brand").innerHTML = siteTextHome.footerBrand.split("\n").join("<br/>");
 
 /* ---------------- 콘텐츠 섹션 렌더링 ---------------- */
 function sizeBadges(stock){
@@ -429,6 +116,9 @@ function productCardHTML(p, catMeta){
 
 function renderContentSection(cat){
   const meta = CATEGORY_META[cat];
+  const siteText = getSiteText();
+  const heroTitle = siteText.heroTitle[cat] || meta.heroTitle;
+  const heroDesc = siteText.heroDesc[cat] || meta.heroDesc;
   const root = $(`#content-${cat}`);
   root.classList.add(meta.bgClass);
 
@@ -464,8 +154,8 @@ function renderContentSection(cat){
   root.innerHTML = `
     <div class="content-inner">
       ${logoHTML}
-      <h3 class="content-hero-title" style="${meta.key!=='cosplay'?`color:${meta.color==='#FFD84D'?'#C9A400':meta.color}`:''}">${meta.heroTitle}</h3>
-      <p class="content-hero-desc">${meta.heroDesc}</p>
+      <h3 class="content-hero-title" style="${meta.key!=='cosplay'?`color:${meta.color==='#FFD84D'?'#C9A400':meta.color}`:''}">${heroTitle}</h3>
+      <p class="content-hero-desc">${heroDesc}</p>
 
       <div class="popular-badge">인기상품</div>
       <div class="popular-slider"><div class="popular-track">${popularHTML}</div></div>
@@ -487,7 +177,6 @@ function renderContentSection(cat){
     btn.classList.add("active");
     renderSubPanel(cat, btn.dataset.sub, meta, false);
   });
-  // 첫 서브카테고리 기본 오픈
   filterRow.firstElementChild.classList.add("active");
   renderSubPanel(cat, meta.order[0], meta, false);
 
@@ -495,7 +184,7 @@ function renderContentSection(cat){
     const addBtn = e.target.closest("[data-addcart]");
     if(addBtn){ e.stopPropagation(); addToCart(addBtn.dataset.addcart); return; }
     const card = e.target.closest("[data-pid]");
-    if(card){ openQuickView(card.dataset.pid); }
+    if(card){ window.location.href = `product.html?id=${card.dataset.pid}`; }
   });
 }
 
@@ -515,37 +204,7 @@ function renderSubPanel(cat, sub, meta, showAll){
 
 ["hanbok","world","cosplay","stage"].forEach(renderContentSection);
 
-/* ---------------- 상품 퀵뷰 (상세페이지는 다음 단계에서 별도 구현 예정) ---------------- */
-function openQuickView(pid){
-  const p = getProduct(pid);
-  if(!p) return;
-  const meta = CATEGORY_META[p.cat];
-  const overlay = document.createElement("div");
-  overlay.className = "modal-overlay";
-  overlay.innerHTML = `<div class="modal" style="width:640px;max-width:92vw;">
-    <button class="modal-close" data-qv-close>&times;</button>
-    <div style="display:flex;gap:24px;flex-wrap:wrap;">
-      <img src="${p.images[0]}" alt="${p.name}" style="width:260px;height:340px;object-fit:cover;"/>
-      <div style="flex:1;min-width:220px;">
-        <div style="font-size:12px;color:#888;">${meta.label} · ${p.sub}</div>
-        <h3 style="margin:6px 0;font-family:var(--font-friendly);">${p.name}</h3>
-        <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:10px;">${p.desc.join("<br/>")}</div>
-        <div style="color:#C9A400;font-size:13px;margin-bottom:10px;">★ ${p.rating} (${p.reviewCount})</div>
-        <div style="font-weight:800;font-size:20px;color:${meta.color};margin-bottom:14px;">${won(p.price)} <span style="font-size:12px;color:#999;">/ 1일</span></div>
-        <div class="pcard-sizes" style="margin-bottom:16px;">${sizeBadges(p.stock)}</div>
-        <button class="primary-btn" data-qv-add="${p.id}">장바구니 담기</button>
-        <p style="font-size:11px;color:#aaa;margin-top:10px;">* 상품 상세페이지는 다음 단계에서 별도로 구현됩니다. 지금은 요약 정보만 보여드려요.</p>
-      </div>
-    </div>
-  </div>`;
-  document.body.appendChild(overlay);
-  overlay.addEventListener("click",(e)=>{
-    if(e.target===overlay || e.target.closest("[data-qv-close]")){ overlay.remove(); }
-    if(e.target.closest("[data-qv-add]")){ addToCart(p.id); overlay.remove(); }
-  });
-}
-
-/* ---------------- 챗봇 (목업 응답, GPT 연동은 추후) ---------------- */
+/* ---------------- 챗봇 (키워드 목업 + GPT API 연동, js/chatbot-config.js에서 키 설정) ---------------- */
 const CHAT_KEYWORDS = [
   { label:"대여 방법안내", reply:"입어봄은 온라인에서 원하는 의상을 선택하고, 사이즈와 대여기간을 정한 뒤 결제하면 대여가 시작돼요. 대여 후에는 문 앞에 두기만 하면 반납이 완료됩니다." },
   { label:"배송/반납 안내", reply:"오늘 주문하시면 오늘 도착이 원칙이에요. 반납은 정해진 반납일에 문 앞에 놓아두시면 저희가 직접 수거해갑니다." },
@@ -568,11 +227,11 @@ function addChatMsg(role, text){
   d.textContent = text;
   chatbotMessages.appendChild(d);
   chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  return d;
 }
-addChatMsg("bot", "안녕하세요! 입어봄 AI 상담원입니다. 궁금하신 점을 키워드로 선택하거나 자유롭게 입력해주세요 :)");
+addChatMsg("bot", getSiteText().chatbotGreeting);
 
-function mockBotReply(text){
-  const lower = text.toLowerCase();
+function localBotReply(text){
   if(text.includes("네즈코")){
     return "네즈코 코스프레 의상은 현재 대여 가능한 재고가 있습니다. 원하는 사이즈와 대여 날짜를 선택하면 해당 기간의 정확한 재고를 확인할 수 있어요. 가발과 대나무 소품 등 포함 구성도 상세페이지에서 확인할 수 있습니다.";
   }
@@ -585,16 +244,64 @@ function mockBotReply(text){
   if(text.includes("배송") || text.includes("반납") || text.includes("세탁")){
     return "오늘 주문시 오늘 도착이 기본이며, 반납은 문 앞에 두시면 저희가 직접 수거합니다. 모든 의상은 100% 세탁 및 고온살균 처리 후 발송돼요.";
   }
-  return "문의 감사합니다! 상품명, 사이즈, 대여 날짜를 함께 알려주시면 더 정확하게 안내해드릴 수 있어요. (현재는 목업 데모 응답이며, 실제 GPT API 연동은 이후 단계에서 진행됩니다.)";
+  return null;
 }
+
+/* GPT API 연동 : window.IBUBOM_OPENAI_KEY 에 키가 설정되어 있을 때만 실제 호출.
+   공개되는 정적 사이트 특성상 코드에 키를 직접 하드코딩하지 않고,
+   관리자페이지 > 챗봇 설정에서 저장한 값을 브라우저 localStorage에서 읽어 사용한다. */
+async function callChatGPT(userText, history){
+  const key = localStorage.getItem("ibubom_openai_key");
+  if(!key){
+    return localBotReply(userText) || "문의 감사합니다! 상품명, 사이즈, 대여 날짜를 함께 알려주시면 더 정확하게 안내해드릴 수 있어요.\n(현재 챗봇은 목업 응답이며, 관리자페이지에서 OpenAI API 키를 설정하면 실제 GPT 응답으로 전환됩니다.)";
+  }
+  try{
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${key}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role:"system", content:"너는 의상 대여 쇼핑몰 '입어봄(IBUBOM)'의 상담원이야. 한복/각국 전통의상/코스프레/공연의상 대여 관련 질문에 친절하고 간결한 한국어 존댓말로 답해줘." },
+          ...history.slice(-6),
+          { role:"user", content:userText }
+        ],
+        max_tokens: 300
+      })
+    });
+    if(!res.ok){
+      if(res.status===429) return "지금 요청이 많아 응답이 지연되고 있어요. 잠시 후 다시 시도해주세요.";
+      if(res.status===401) return "챗봇 연동 키가 유효하지 않습니다. 관리자페이지에서 API 키를 다시 확인해주세요.";
+      return "일시적인 오류로 답변을 가져오지 못했어요. 잠시 후 다시 시도해주세요.";
+    }
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content?.trim() || "죄송해요, 답변을 생성하지 못했어요. 다시 질문해주시겠어요?";
+  }catch(err){
+    return "네트워크 오류로 응답을 받지 못했어요. 인터넷 연결을 확인하고 다시 시도해주세요.";
+  }
+}
+
 const chatbotInput = $("#chatbotInput");
-function sendChat(){
+const chatHistory = [];
+let chatPending = false;
+async function sendChat(){
   const text = chatbotInput.value.trim();
-  if(!text) return;
+  if(!text || chatPending) return;
   addChatMsg("user", text);
+  chatHistory.push({ role:"user", content:text });
   chatbotInput.value = "";
   chatbotInput.style.height = "auto";
-  setTimeout(()=> addChatMsg("bot", mockBotReply(text)), 400);
+  chatPending = true;
+  const pendingEl = addChatMsg("bot", "입력 중...");
+  pendingEl.classList.add("pending");
+  const reply = await callChatGPT(text, chatHistory);
+  pendingEl.remove();
+  addChatMsg("bot", reply);
+  chatHistory.push({ role:"assistant", content:reply });
+  chatPending = false;
 }
 $("#chatbotSend").addEventListener("click", sendChat);
 chatbotInput.addEventListener("keydown",(e)=>{
@@ -606,7 +313,7 @@ chatbotInput.addEventListener("input", ()=>{
 });
 chatbotFab.addEventListener("click", ()=> openModal("chatbotModal"));
 
-/* ---------------- 상담하기 (AI 맞춤추천 목업 플로우) ---------------- */
+/* ---------------- 상담하기 (AI 맞춤추천 플로우) ---------------- */
 const consultFab = $("#consultFab");
 const consultBody = $("#consultBody");
 const consultProgress = $("#consultProgress");
@@ -623,7 +330,7 @@ function renderConsult(){
   const step = consultState.step;
   let html = "";
   if(step===0){
-    html = `<div class="consult-step"><p style="color:#888;">반갑습니다. 고객님!</p>
+    html = `<div class="consult-step"><p style="color:#888;">${getSiteText().consultGreeting}</p>
       <div class="consult-q">고객님의 성별을 알려주세요.</div>
       <div class="consult-choices">
         <button data-pick="gender" data-val="여자">여자</button>
@@ -665,13 +372,13 @@ function renderConsult(){
         <p style="font-size:13px;color:#888;">고객님의 선택과 가장 잘 맞는 의상이에요</p>
         <div class="consult-best-price">1일 대여 ${won(best.price)}</div>
         <div class="consult-best-actions">
-          <button class="more-btn" data-view="${best.id}">상품 자세히 보기 →</button>
+          <a class="more-btn" href="product.html?id=${best.id}">상품 자세히 보기 →</a>
           <button class="primary-btn" style="width:auto;margin:0;" data-addcart="${best.id}">장바구니 담기</button>
         </div>
       </div>
       <div class="consult-more-title">이런 의상도 좋아하실 것 같아요</div>
       <div class="consult-more-grid">
-        ${others.map((p,i)=>`<div data-pid="${p.id}"><img src="${p.images[0]}" alt="${p.name}"/><div class="pct">${pcts[i]}%</div><div class="nm">${p.name}</div></div>`).join("")}
+        ${others.map((p,i)=>`<a href="product.html?id=${p.id}"><img src="${p.images[0]}" alt="${p.name}"/><div class="pct">${pcts[i]}%</div><div class="nm">${p.name}</div></a>`).join("")}
       </div>
     </div>`;
   }
@@ -694,12 +401,8 @@ consultBody.addEventListener("click",(e)=>{
     return;
   }
   if(e.target.id==="toResultBtn"){ goStep(4); return; }
-  const view = e.target.closest("[data-view]");
-  if(view){ openQuickView(view.dataset.view); return; }
   const add = e.target.closest("[data-addcart]");
   if(add){ addToCart(add.dataset.addcart); return; }
-  const more = e.target.closest(".consult-more-grid [data-pid]");
-  if(more){ openQuickView(more.dataset.pid); }
 });
 consultFab.addEventListener("click", ()=>{
   consultState = { step:0, gender:"", age:"", purpose:"", picks:[] };

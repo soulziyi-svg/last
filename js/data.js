@@ -346,10 +346,10 @@ Object.entries(COSPLAY_RAW).forEach(([sub, list]) => list.forEach((item, i) => p
 Object.entries(STAGE_RAW).forEach(([sub, list]) => list.forEach((item, i) => pushProduct("stage", sub, item, i)));
 
 function productsByCat(cat) {
-  return PRODUCTS.filter((p) => p.cat === cat);
+  return PRODUCTS.filter((p) => p.cat === cat && !p.hidden);
 }
 function productsByCatSub(cat, sub) {
-  return PRODUCTS.filter((p) => p.cat === cat && p.sub === sub);
+  return PRODUCTS.filter((p) => p.cat === cat && p.sub === sub && !p.hidden);
 }
 function getProduct(id) {
   return PRODUCTS.find((p) => p.id === id);
@@ -365,3 +365,140 @@ function randomPick(arr, n) {
 }
 
 const BANNER_IMAGES = ["000", "011", "022", "033", "044", "066", "077"].map((n) => `img/베너/${n}.png`);
+const BANNER_TEXTS = [
+  { title: "친구들과 한강에서 특별한 하루", desc: "한강에서 각 나라의 전통의상을 입고 먹는 라면은 잊을 수가 없을 것 같아요." },
+  { title: "졸업사진, 오늘만큼은 주인공처럼", desc: "친구들과 다 같이 한복을 맞춰 입고 교정 곳곳에서 특별한 순간을 남겨보세요." },
+  { title: "코스프레로 완성하는 덕질의 정점", desc: "좋아하는 캐릭터가 되어 행사장에서, 스튜디오에서 마음껏 촬영해보세요." },
+  { title: "가족사진, 한국적인 장소에서 특별하게", desc: "온 가족이 한복을 맞춰 입고 고궁에서 오래 남을 추억을 만들어보세요." },
+  { title: "내일 무대, 오늘 도착하는 단체 의상", desc: "급하게 필요한 공연 단체복도 오늘 주문하면 오늘 받아볼 수 있어요." },
+  { title: "요즘 뜨는 아이돌 무대의상 챌린지", desc: "무대 위 그 느낌 그대로, 쇼츠 촬영을 위한 완성도 높은 무대의상을 빌려보세요." },
+  { title: "세계 여행 없이 떠나는 세계 여행", desc: "일본의 기모노부터 인도의 사리까지, 비행기 없이 각 나라의 색을 입어보세요." }
+];
+
+/* ---------- 관리자 오버라이드 / 사이트 텍스트 (localStorage 연동) ---------- */
+const LS_KEYS = {
+  productOverrides: "ibubom_product_overrides",
+  customProducts: "ibubom_custom_products",
+  siteText: "ibubom_site_text",
+  orders: "ibubom_orders",
+  reviewsAdmin: "ibubom_reviews_admin",
+  stockOverrides: "ibubom_stock_overrides"
+};
+
+function safeParse(key, fallback) {
+  try {
+    const v = JSON.parse(localStorage.getItem(key));
+    return v == null ? fallback : v;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function loadOverrides() {
+  const ov = safeParse(LS_KEYS.productOverrides, {});
+  PRODUCTS.forEach((p) => {
+    if (ov[p.id]) Object.assign(p, ov[p.id]);
+  });
+  const custom = safeParse(LS_KEYS.customProducts, []);
+  custom.forEach((c) => {
+    if (!PRODUCTS.find((p) => p.id === c.id)) PRODUCTS.push(c);
+  });
+}
+loadOverrides();
+
+function saveProductOverride(id, patch) {
+  const ov = safeParse(LS_KEYS.productOverrides, {});
+  ov[id] = Object.assign({}, ov[id], patch);
+  localStorage.setItem(LS_KEYS.productOverrides, JSON.stringify(ov));
+}
+function addCustomProduct(product) {
+  const custom = safeParse(LS_KEYS.customProducts, []);
+  custom.push(product);
+  localStorage.setItem(LS_KEYS.customProducts, JSON.stringify(custom));
+}
+function removeCustomProduct(id) {
+  const custom = safeParse(LS_KEYS.customProducts, []).filter((p) => p.id !== id);
+  localStorage.setItem(LS_KEYS.customProducts, JSON.stringify(custom));
+}
+
+const SITE_TEXT_DEFAULT = {
+  mainTagline: "하루를 빌리고, 추억은 가져가세요",
+  chatbotGreeting: "안녕하세요! 입어봄 AI 상담원입니다. 궁금하신 점을 키워드로 선택하거나 자유롭게 입력해주세요 :)",
+  consultGreeting: "반갑습니다. 고객님!",
+  footerBrand: "입어봄 / IBUBOM COSTUME RENTAL\n오늘 만큼은, 뭐든 되어봄.",
+  heroTitle: {},
+  heroDesc: {},
+  topBanner: "오늘 주문시 오늘 도착 · 100% 세탁 및 고온살균 처리 · 간편하게 수거 문앞에 두면 끝 · 단체 주문 추가할인 · 방송국 대여와 영화촬영 다수 대여경험으로 컨셉추천"
+};
+function getSiteText() {
+  const saved = safeParse(LS_KEYS.siteText, {});
+  return Object.assign({}, SITE_TEXT_DEFAULT, saved, {
+    heroTitle: Object.assign({}, SITE_TEXT_DEFAULT.heroTitle, saved.heroTitle),
+    heroDesc: Object.assign({}, SITE_TEXT_DEFAULT.heroDesc, saved.heroDesc)
+  });
+}
+function saveSiteText(patch) {
+  const cur = getSiteText();
+  const next = Object.assign({}, cur, patch);
+  localStorage.setItem(LS_KEYS.siteText, JSON.stringify(next));
+}
+
+/* ---------- 관리자 주문/후기 데모 데이터 (없으면 최초 1회 시드) ---------- */
+function seedOrdersIfEmpty() {
+  if (localStorage.getItem(LS_KEYS.orders)) return;
+  const statuses = ["배송준비", "배송중", "배송완료"];
+  const sample = randomPick(PRODUCTS, 14);
+  const orders = sample.map((p, i) => {
+    const d = new Date(2026, 7, 10 + (i % 12));
+    return {
+      orderNo: `IBUBOM-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}-${String(i + 1).padStart(3, "0")}`,
+      customer: REVIEW_NAMES[i % REVIEW_NAMES.length],
+      productId: p.id,
+      productName: p.name,
+      date: d.toISOString().slice(0, 10),
+      amount: p.price + (i % 3) * 3000,
+      status: statuses[i % statuses.length],
+      dueDate: new Date(2026, 7, 12 + (i % 12) + 4).toISOString().slice(0, 10)
+    };
+  });
+  localStorage.setItem(LS_KEYS.orders, JSON.stringify(orders));
+}
+function getOrders() {
+  seedOrdersIfEmpty();
+  return safeParse(LS_KEYS.orders, []);
+}
+function saveOrders(list) {
+  localStorage.setItem(LS_KEYS.orders, JSON.stringify(list));
+}
+
+function seedReviewsIfEmpty() {
+  if (localStorage.getItem(LS_KEYS.reviewsAdmin)) return;
+  const cats = ["hanbok", "world", "cosplay", "stage"];
+  const reviews = REVIEW_IMAGES.map((img, i) => {
+    const cat = cats[i % cats.length];
+    const pool = productsByCat(cat);
+    const p = pool[i % pool.length];
+    return {
+      id: "rv" + (i + 1),
+      cat,
+      productId: p ? p.id : null,
+      productName: p ? p.name : "",
+      image: img,
+      name: REVIEW_NAMES[i % REVIEW_NAMES.length],
+      date: `2026.0${(i % 9) + 1}.1${i % 9}`,
+      rating: (4.5 + (i % 2) * 0.4).toFixed(1),
+      text: "졸업사진 찍으려고 친구들이랑 같이 빌렸어요. 좋은 추억 입어보고 갑니다.",
+      tags: REVIEW_TAGS[cat],
+      reply: "",
+      visible: true
+    };
+  });
+  localStorage.setItem(LS_KEYS.reviewsAdmin, JSON.stringify(reviews));
+}
+function getReviews() {
+  seedReviewsIfEmpty();
+  return safeParse(LS_KEYS.reviewsAdmin, []);
+}
+function saveReviews(list) {
+  localStorage.setItem(LS_KEYS.reviewsAdmin, JSON.stringify(list));
+}
